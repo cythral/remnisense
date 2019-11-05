@@ -36,7 +36,7 @@ Resources:
       SubjectAlternativeNames:
         - dev.remnisense.com
 
-  ListenerCertificate:
+  ListenerCertificate: 
     Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
     Properties:
       ListenerArn: !ImportValue cfn-core:HttpsListenerArn
