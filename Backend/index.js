@@ -8,7 +8,10 @@ const BASE_PATH = process.env.BASE_PATH || "/";
 
 function route(method, path, handler) 
 {
-    const fullPath = BASE_PATH + "/" + path.trimStart("/");
+    let fullPath = BASE_PATH + "/" + path.trimStart("/");
+    fullPath = fullPath.trimEnd("/");
+    fullPath = fullPath === "" ? "/" : fullPath;
+    
     return app[method](fullPath, handler);
 }
 
@@ -65,6 +68,7 @@ const getUser = async obj =>
         }
     );
 };
+
 
 
 route("get", "/", function(req, res)
