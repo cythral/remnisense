@@ -17,10 +17,19 @@ Parameters:
     Description: Name of the github branch to track
 
 Resources:
+  HostedZone:
+    Type: Custom::HostedZone
+    Properties:
+      ServiceToken: !ImportValue cfn-resources:HostedZoneLambdaArn
+      Name: remnisense.com
+      DelegationSetId: !ImportValue cfn-dns:DelegationSetId
+      HostedZoneConfig:
+        Comment: Hosted zone for remnisense
+
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !ImportValue cfn-dns:HostedZoneId
+      HostedZoneId: !Ref HostedZone
       RecordSets:
         - Name: dev.remnisense.com
           Type: A
@@ -36,7 +45,7 @@ Resources:
   ProdDnsRecords:
     Type: AWS::Route53::RecordSetGroup
     Properties:
-      HostedZoneId: !ImportValue cfn-dns:HostedZoneId
+      HostedZoneId: !Ref HostedZone
       RecordSets: 
         - Name: remnisense.com
           Type: A
