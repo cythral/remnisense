@@ -13,3 +13,10 @@ phases:
     commands:
       - docker build -t $IMAGE .
       - docker push $IMAGE
+
+artifacts:
+  discard-paths: yes
+  files:
+    - deploy/remnisense.template.yml
+    - dev.config.json
+    - prod.config.json

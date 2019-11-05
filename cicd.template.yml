@@ -207,7 +207,7 @@ Resources:
               Configuration:
                 StackName: remnisense
                 TemplatePath: buildResults::remnisense.template.yml
-                TemplateConfiguration: buildResults::remnisense.dev.config.json
+                TemplateConfiguration: buildResults::dev.config.json
                 ActionMode: CREATE_UPDATE
                 RoleArn: !ImportValue cfn-metadata:DevAgentRoleArn
                 Capabilities: CAPABILITY_IAM
@@ -235,7 +235,7 @@ Resources:
               Configuration:
                 StackName: remnisense
                 TemplatePath: buildResults::remnisense.template.yml
-                TemplateConfiguration: buildResults::remnisense.prod.config.json
+                TemplateConfiguration: buildResults::prod.config.json
                 ActionMode: CREATE_UPDATE
                 RoleArn: !ImportValue cfn-metadata:ProdAgentRoleArn
                 Capabilities: CAPABILITY_IAM

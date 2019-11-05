@@ -1,0 +1,31 @@
+Parameters:
+  Image:
+    Type: String
+    Description: Location of the docker image to use for the Remnisense server
+  
+  DomainName:
+    Type: String
+    Description: Domain name to use for this deployment of Remnisense
+
+Resources:
+  ListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
+        Priority: 3
+        Actions:
+          - Type: forward
+            TargetGroupArn: !Ref TargetGroup
+        Conditions:
+          - Field: host-header
+            HostHeaderConfig:
+              Values:
+                - !Ref DomainName
+
+  TargetGroup:
+    Type: AWS::ECS::TargetGroup
+    Properties:
+      TargetType: ip
+      VpcId: !ImportValue cfn-utilities:VpcId
+      Protocol: HTTP
+      Port: 80
