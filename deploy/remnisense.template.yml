@@ -23,7 +23,7 @@ Resources:
               - !Ref DomainName
 
   TargetGroup:
-    Type: AWS::ECS::TargetGroup
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       TargetType: ip
       VpcId: !ImportValue cfn-utilities:VpcId
