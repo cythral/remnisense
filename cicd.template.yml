@@ -26,6 +26,23 @@ Resources:
       HostedZoneConfig:
         Comment: Hosted zone for remnisense
 
+  Certificate:
+    Type: Custom::Certificate
+    Properties:
+      ServiceToken: !ImportValue cfn-resources:CertificateLambdaArn
+      DomainName: remnisense.com
+      HostedZoneId: !Ref HostedZone
+      ValidationMethod: DNS
+      SubjectAlternativeNames:
+        - dev.remnisense.com
+
+  ListenerCertificate:
+    Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
+    Properties:
+      ListenerArn: !ImportValue cfn-core:HttpsListenerArn
+      Certificates:
+        - !Ref Certificate
+
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
     Properties:
