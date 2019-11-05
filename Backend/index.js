@@ -4,13 +4,16 @@ const Sequelize = require('sequelize');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
+const BASE_PATH = process.env.BASE_PATH || "/";
+
+function route(method, path, handler) 
+{
+    const fullPath = BASE_PATH + "/" + path.trimStart("/");
+    return app[method](fullPath, handler);
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
-app.get('/',function(req, res)
-{
-    res.json({message: 'App is running'});
-});
 
 app.listen(PORT, function()
 {
@@ -63,12 +66,18 @@ const getUser = async obj =>
     );
 };
 
-app.get('/users', function(req, res)
+
+route("get", "/", function(req, res)
+{
+    res.json({message: 'App is running'});
+});
+
+route("get", "/users", function(req, res)
 {
     getAllUsers().then(user => res.json(user));
 });
 
-app.post('/register', function(req, res, next)
+route("post", "/register", function(req, res)
 {
     const{name, password} = req.body;
     createUser({name,password}).then(user =>

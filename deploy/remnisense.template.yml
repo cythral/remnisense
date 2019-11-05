@@ -33,6 +33,7 @@ Resources:
       VpcId: !ImportValue cfn-utilities:VpcId
       Protocol: HTTP
       Port: 80
+      HealthCheckPath: /api
 
   Cluster:
     Type: AWS::ECS::Cluster
@@ -87,6 +88,8 @@ Resources:
           Environment:
             - Name: PORT
               Value: 80
+            - Name: BASE_PATH
+              Value: /api
 
 
   TaskRole:
