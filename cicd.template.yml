@@ -34,7 +34,7 @@ Resources:
       HostedZoneId: !Ref HostedZone
       ValidationMethod: DNS
       SubjectAlternativeNames:
-        - dev.remnisense.com 
+        - dev.remnisense.com
 
   ListenerCertificate:
     Type: AWS::ElasticLoadBalancingV2::ListenerCertificate
