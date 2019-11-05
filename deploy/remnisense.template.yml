@@ -12,7 +12,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
-      Priority: 3
+      Priority: 4
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
