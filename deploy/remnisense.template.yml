@@ -8,7 +8,7 @@ Parameters:
     Description: Domain name to use for this deployment of Remnisense
 
 Resources:
-  ListenerRule:
+  ServerListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
@@ -21,6 +21,10 @@ Resources:
           HostHeaderConfig:
             Values:
               - !Ref DomainName
+        - Field: path-pattern
+          PathPatternConfig:
+            Values:
+              - /api*
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
@@ -29,3 +33,77 @@ Resources:
       VpcId: !ImportValue cfn-utilities:VpcId
       Protocol: HTTP
       Port: 80
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref AWS::StackName
+  
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split
+            - ","
+            - !ImportValue cfn-utilities:SubnetIds
+          SecurityGroups:
+            - !ImportValue cfn-utilities:WebSecurityGroupId
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: remnisense-server
+          ContainerPort: 80
+          TargetGroupArn: !Ref TargetGroup
+      TaskDefinition: !Ref TaskDefinition
+      DesiredCount: 1
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 1
+        MaximumPercent: 200
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: 256
+      Memory: 512
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Name: remnisense-server
+          Essential: true
+          Image: !Ref Image
+          PortMappings:
+            - ContainerPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Ref AWS::StackName
+          Environment:
+            - Name: PORT
+              Value: 80
+
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 14
