@@ -14,7 +14,7 @@ phases:
       - docker build -t $IMAGE .
       - docker push $IMAGE
 
-      - ./deploy/create-config-files.sh
+      - ./deploy/create-config-files.sh $IMAGE
 
 artifacts:
   discard-paths: yes
