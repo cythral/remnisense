@@ -12,15 +12,15 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
-        Priority: 3
-        Actions:
-          - Type: forward
-            TargetGroupArn: !Ref TargetGroup
-        Conditions:
-          - Field: host-header
-            HostHeaderConfig:
-              Values:
-                - !Ref DomainName
+      Priority: 3
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      Conditions:
+        - Field: host-header
+          HostHeaderConfig:
+            Values:
+              - !Ref DomainName
 
   TargetGroup:
     Type: AWS::ECS::TargetGroup
