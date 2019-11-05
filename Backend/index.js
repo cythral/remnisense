@@ -8,10 +8,8 @@ const BASE_PATH = process.env.BASE_PATH || "/";
 
 function route(method, path, handler) 
 {
-    let fullPath = BASE_PATH + "/" + path.trimStart("/");
-    fullPath = fullPath.trimEnd("/");
+    let fullPath = BASE_PATH + path.trimEnd("/");
     fullPath = fullPath === "" ? "/" : fullPath;
-    
     return app[method](fullPath, handler);
 }
 
