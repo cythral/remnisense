@@ -41,7 +41,7 @@ Resources:
     Properties:
       ListenerArn: !ImportValue cfn-core:HttpsListenerArn
       Certificates:
-        - !Ref Certificate
+        - CertificateArn: !Ref Certificate
 
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
