@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
 app.get('/',function(req, res)
@@ -10,7 +12,7 @@ app.get('/',function(req, res)
     res.json({message: 'App is running'});
 });
 
-app.listen(3000, function()
+app.listen(PORT, function()
 {
     console.log('Running on port 3000');
 });
