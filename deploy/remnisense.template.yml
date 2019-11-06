@@ -24,7 +24,7 @@ Resources:
     Type: Custom::Secret
     Properties:
       ServiceToken: !Sub 
-        - arn:aws:lambda:${AWS::Region}:${MasterAccountId}:function/Secret
+        - arn:aws:lambda:${AWS::Region}:${MasterAccountId}:function:Secret
         - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
       Ciphertext: !Ref DBPassword
 
