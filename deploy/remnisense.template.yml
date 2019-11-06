@@ -134,7 +134,7 @@ Resources:
             - Name: DB_NAME
               Value: !Ref DBName
             - Name: DB_USER
-              Value: !Ref DBUSer
+              Value: !Ref DBUser
             - Name: ENCRYPTED_DB_PASSWORD
               Value: !Ref DBPassword
 
