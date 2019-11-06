@@ -39,6 +39,8 @@ Resources:
       MasterUsername: !Ref DBUser
       MasterUserPassword: !GetAtt DecryptedDBPassword.Plaintext
       DBSubnetGroupName: !ImportValue cfn-utilities:DBSubnetGroupName
+      VpcSecurityGroupIds:
+        - !ImportValue cfn-utilities:DatabaseSecurityGroupId
       ScalingConfiguration:
         AutoPause: true
         MaxCapacity: 2
@@ -92,6 +94,7 @@ Resources:
             - !ImportValue cfn-utilities:SubnetIds
           SecurityGroups:
             - !ImportValue cfn-utilities:WebSecurityGroupId
+            - !ImportValue cfn-utilities:DatabaseSecurityGroupId
           AssignPublicIp: ENABLED
       LoadBalancers:
         - ContainerName: remnisense-server
