@@ -36,7 +36,7 @@ Resources:
       EngineVersion: 5.6.10a
       DatabaseName: !Ref DBName
       DBClusterParameterGroupName: default.aurora5.6
-      MasterUsername: !Ref DBUsername
+      MasterUsername: !Ref DBUser
       MasterUserPassword: !GetAtt DecryptedDBPassword.Plaintext
       ScalingConfiguration:
         AutoPause: true
