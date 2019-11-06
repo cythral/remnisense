@@ -1,4 +1,7 @@
 {
     "Image": null,
-    "DomainName": "dev.remnisense.com"
+    "DomainName": "dev.remnisense.com",
+    "DBName": "remnisense",
+    "DBUser": "rmns",
+    "DBPassword": "AQICAHh4uPV0nEVcHa3p2SypoTWL5pD0GFaoWYwOD6EQxbjUgAFfPbKfYiuZVEGU7E4IWfd+AAAAbDBqBgkqhkiG9w0BBwagXTBbAgEAMFYGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMeHaF/ZodYueaGgU9AgEQgCksv2KGBd2qCtzPdkPp2ueX19Km7N1Kbwm66tZZwnvAWitTuVTlzTf2BA=="
 }

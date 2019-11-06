@@ -8,6 +8,14 @@ Parameters:
     Description: Domain name to use for this deployment of Remnisense
 
 Resources:
+  DecryptedDBPassword:
+    Type: Custom::Secret
+    Properties:
+      ServiceToken: !Sub 
+        - arn:aws:lambda:${AWS::Region}:${MasterAccountId}:function/Secret
+        - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
+      Ciphertext: !Ref DBPassword
+
   ServerListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
