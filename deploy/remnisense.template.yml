@@ -7,6 +7,18 @@ Parameters:
     Type: String
     Description: Domain name to use for this deployment of Remnisense
 
+  DBName:
+    Type: String
+    Description: Database name
+
+  DBUser:
+    Type: String
+    Description: Username to use to connect to the database with
+
+  DBPassword:
+    Type: String
+    Description: Encrypted password to use to connect to the database with
+
 Resources:
   DecryptedDBPassword:
     Type: Custom::Secret
