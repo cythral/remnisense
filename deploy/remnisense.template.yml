@@ -70,6 +70,9 @@ Resources:
       Protocol: HTTP
       Port: 80
       HealthCheckPath: /api
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
 
   Cluster:
     Type: AWS::ECS::Cluster
