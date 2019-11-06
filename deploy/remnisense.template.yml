@@ -38,6 +38,7 @@ Resources:
       DBClusterParameterGroupName: default.aurora5.6
       MasterUsername: !Ref DBUser
       MasterUserPassword: !GetAtt DecryptedDBPassword.Plaintext
+      DBSubnetGroupName: !ImportValue cfn-utilities:DBSubnetGroupName
       ScalingConfiguration:
         AutoPause: true
         MaxCapacity: 2
