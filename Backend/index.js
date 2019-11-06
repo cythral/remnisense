@@ -32,6 +32,9 @@ const sequelize = new Sequelize
     username:  DB_USER,
     password: DB_PASSWORD,
     dialect: 'mysql',
+    dialectOptions: {
+        connectTimeout: 60000
+    }
 });
 
 sequelize.authenticate().then(() => console.log('Connection established')).catch(err => console.error('unable to connect to database', err));
