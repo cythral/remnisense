@@ -5,6 +5,10 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 const BASE_PATH = process.env.BASE_PATH || "/";
+const DB_USER = process.env.DB_USER;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_HOST = process.env.DB_HOST;
+const DB_NAME = process.env.DB_NAME;
 
 function route(method, path, handler) 
 {
@@ -23,9 +27,10 @@ app.listen(PORT, function()
 
 const sequelize = new Sequelize
 ({
-    database: 'remnisense_db',
-    username: 'root',
-    password: 'password',
+    host: DB_HOST,
+    database: DB_NAME,
+    username:  DB_USER,
+    password: DB_PASSWORD,
     dialect: 'mysql',
 });
 
