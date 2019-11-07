@@ -175,7 +175,7 @@ Resources:
           Essential: true
           Image: !Ref ApiImage
           PortMappings:
-            - ContainerPort: 8080
+            - ContainerPort: 80
           LogConfiguration:
             LogDriver: awslogs
             Options:
