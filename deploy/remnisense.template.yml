@@ -112,7 +112,7 @@ Resources:
     Properties:
       ClusterName: !Ref AWS::StackName
   
-  Service:
+  ApiService:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !Ref Cluster
@@ -128,18 +128,39 @@ Resources:
           AssignPublicIp: ENABLED
       LoadBalancers:
         - ContainerName: api
-          ContainerPort: 8080
-          TargetGroupArn: !Ref ApiTargetGroup
-        - ContainerName: client
           ContainerPort: 80
-          TargetGroupArn: !Ref ClientTargetGroup
-      TaskDefinition: !Ref TaskDefinition
+          TargetGroupArn: !Ref ApiTargetGroup
+      TaskDefinition: !Ref ApiTaskDefinition
       DesiredCount: 1
       DeploymentConfiguration:
         MinimumHealthyPercent: 1
         MaximumPercent: 200
 
-  TaskDefinition:
+  ClientService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split
+            - ","
+            - !ImportValue cfn-utilities:SubnetIds
+          SecurityGroups:
+            - !ImportValue cfn-utilities:WebSecurityGroupId
+            - !ImportValue cfn-utilities:DatabaseSecurityGroupId
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: client
+          ContainerPort: 80
+          TargetGroupArn: !Ref ClientTargetGroup
+      TaskDefinition: !Ref ClientTaskDefinition
+      DesiredCount: 1
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 1
+        MaximumPercent: 200
+
+  ApiTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Cpu: 256
@@ -163,7 +184,7 @@ Resources:
               awslogs-stream-prefix: !Sub ${AWS::StackName}-api
           Environment:
             - Name: PORT
-              Value: 8080
+              Value: 80
             - Name: BASE_PATH
               Value: /api
             - Name: DB_HOST
@@ -174,6 +195,18 @@ Resources:
               Value: !Ref DBUser
             - Name: ENCRYPTED_DB_PASSWORD
               Value: !Ref DBPassword
+
+  ClientTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: 256
+      Memory: 512
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
         - Name: client
           Essential: true
           Image: !Ref ClientImage
