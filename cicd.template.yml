@@ -115,6 +115,25 @@ Resources:
                 - !ImportValue cfn-metadata:DevAccountId
                 - !ImportValue cfn-metadata:ProdAccountId
 
+  ClientDockerRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryPolicyText:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - ecr:GetAuthorizationToken
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:BatchCheckLayerAvailability
+              - ecr:ListImages
+            Principal:
+              AWS:
+                - !Ref AWS::AccountId
+                - !ImportValue cfn-metadata:DevAccountId
+                - !ImportValue cfn-metadata:ProdAccountId
+
   ConfigBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
@@ -130,6 +149,8 @@ Resources:
             Value: !Ref ArtifactStore
           - Name: API_REPOSITORY_URI
             Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ApiDockerRepo}
+          - Name: CLIENT_REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ClientDockerRepo}
         Type: LINUX_CONTAINER
       Artifacts:
         Type: CODEPIPELINE
@@ -157,6 +178,28 @@ Resources:
       Source:
         Type: CODEPIPELINE
         BuildSpec: api/buildspec.yml
+
+  ClientBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-client-build
+      ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
+      EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+      Environment:
+        PrivilegedMode: true
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+          - Name: REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ClientDockerRepo}
+        Type: LINUX_CONTAINER
+      Artifacts:
+        Type: CODEPIPELINE
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: client/buildspec.yml
 
   Webhook:
     Type: AWS::CodePipeline::Webhook

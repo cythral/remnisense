@@ -1,7 +1,11 @@
 Parameters:
   ApiImage:
     Type: String
-    Description: Location of the docker image to use for the Remnisense server
+    Description: Location of the docker image to use for the Remnisense API
+  
+  ClientImage:
+    Type: String
+    Description: Location of the docker image to use for the Remnisense Client
   
   DomainName:
     Type: String
@@ -47,11 +51,11 @@ Resources:
         MinCapacity: 1
         SecondsUntilAutoPause: 300
 
-  ServerListenerRule:
+  ApiListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
-      Priority: 4
+      Priority: 5
       Actions:
         - Type: forward
           TargetGroupArn: !Ref ApiTargetGroup
@@ -65,6 +69,20 @@ Resources:
             Values:
               - /api*
 
+  ClientListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
+      Priority: 6
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref ClientTargetGroup
+      Conditions:
+        - Field: host-header
+          HostHeaderConfig:
+            Values:
+              - !Ref DomainName
+
   ApiTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -73,6 +91,18 @@ Resources:
       Protocol: HTTP
       Port: 80
       HealthCheckPath: /api
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 30
+
+  ClientTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      TargetType: ip
+      VpcId: !ImportValue cfn-utilities:VpcId
+      Protocol: HTTP
+      Port: 80
+      HealthCheckPath: /healthcheck
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 30
@@ -100,6 +130,9 @@ Resources:
         - ContainerName: api
           ContainerPort: 80
           TargetGroupArn: !Ref ApiTargetGroup
+        - ContainerName: client
+          ContainerPort: 80
+          TargetGroupArn: !Ref ClientTargetGroup
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       DeploymentConfiguration:
@@ -127,7 +160,7 @@ Resources:
             Options:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: !Ref AWS::StackName
+              awslogs-stream-prefix: !Sub ${AWS::StackName}-api
           Environment:
             - Name: PORT
               Value: 80
@@ -141,6 +174,17 @@ Resources:
               Value: !Ref DBUser
             - Name: ENCRYPTED_DB_PASSWORD
               Value: !Ref DBPassword
+        - Name: client
+          Essential: true
+          Image: !Ref ClientImage
+          PortMappings:
+            - ContainerPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Sub ${AWS::StackName}-client
 
   TaskRole:
     Type: AWS::IAM::Role
