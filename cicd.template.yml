@@ -268,6 +268,16 @@ Resources:
                 - Name: sourceCode
               Configuration:
                 ProjectName: !Ref ApiBuildProject
+            - Name: Client
+              ActionTypeId:
+                Category: Build
+                Provider: CodeBuild
+                Owner: AWS
+                Version: 1
+              InputArtifacts:
+                - Name: sourceCode
+              Configuration:
+                ProjectName: !Ref ClientBuildProject
         - Name: Dev
           Actions:
             - Name: Deploy
