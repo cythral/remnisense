@@ -1,0 +1,20 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email)
+      - export IMAGE="$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+  
+  build:
+    commands:
+      - cd client
+      - npm install
+      - npm run build
+      - npm test
+
+      - docker build -t $IMAGE .
+      - docker push $IMAGE
