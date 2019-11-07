@@ -4,25 +4,10 @@ phases:
     runtime-versions:
       docker: 18
   
-  pre_build:
-    commands:
-      - $(aws ecr get-login --no-include-email)
-      - export IMAGE="$REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION"
-  
   build:
     commands:
-      # Server
-      - docker build -t $IMAGE .
-      - docker push $IMAGE
-
-      # Client
-      - cd client
-      - npm install
-      - npm run build
-      - npm test
-      - cd ../
-
-      - ./deploy/create-config-files.sh $IMAGE
+      - apiImage="$API_REPOSITORY_URI:$CODEBUILD_RESOLVED_SOURCE_VERSION"
+      - ./deploy/create-config-files.sh $apiImage
 
 artifacts:
   discard-paths: yes

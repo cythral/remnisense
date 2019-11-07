@@ -96,7 +96,7 @@ Resources:
                 - !ImportValue cfn-metadata:DevAgentRoleArn
                 - !ImportValue cfn-metadata:ProdAgentRoleArn
   
-  DockerRepo:
+  ApiDockerRepo:
     Type: AWS::ECR::Repository
     Properties:
       RepositoryPolicyText:
@@ -128,13 +128,35 @@ Resources:
         EnvironmentVariables:
           - Name: ARTIFACT_STORE
             Value: !Ref ArtifactStore
-          - Name: REPOSITORY_URI
-            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerRepo}
+          - Name: API_REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ApiDockerRepo}
         Type: LINUX_CONTAINER
       Artifacts:
         Type: CODEPIPELINE
       Source:
         Type: CODEPIPELINE
+
+  ApiBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-api-build
+      ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
+      EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+      Environment:
+        PrivilegedMode: true
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:1.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+          - Name: REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ApiDockerRepo}
+        Type: LINUX_CONTAINER
+      Artifacts:
+        Type: CODEPIPELINE
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: api/buildspec.yml
 
   Webhook:
     Type: AWS::CodePipeline::Webhook
@@ -193,6 +215,16 @@ Resources:
                 - Name: buildResults
               Configuration:
                 ProjectName: !Ref BuildProject
+            - Name: Api
+              ActionTypeId:
+                Category: Build
+                Provider: CodeBuild
+                Owner: AWS
+                Version: 1
+              InputArtifacts:
+                - Name: sourceCode
+              Configuration:
+                ProjectName: !Ref ApiBuildProject
         - Name: Dev
           Actions:
             - Name: Deploy

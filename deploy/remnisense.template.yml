@@ -1,5 +1,5 @@
 Parameters:
-  Image:
+  ApiImage:
     Type: String
     Description: Location of the docker image to use for the Remnisense server
   
@@ -54,7 +54,7 @@ Resources:
       Priority: 4
       Actions:
         - Type: forward
-          TargetGroupArn: !Ref TargetGroup
+          TargetGroupArn: !Ref ApiTargetGroup
       Conditions:
         - Field: host-header
           HostHeaderConfig:
@@ -65,7 +65,7 @@ Resources:
             Values:
               - /api*
 
-  TargetGroup:
+  ApiTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       TargetType: ip
@@ -97,9 +97,9 @@ Resources:
             - !ImportValue cfn-utilities:DatabaseSecurityGroupId
           AssignPublicIp: ENABLED
       LoadBalancers:
-        - ContainerName: remnisense-server
+        - ContainerName: api
           ContainerPort: 80
-          TargetGroupArn: !Ref TargetGroup
+          TargetGroupArn: !Ref ApiTargetGroup
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       DeploymentConfiguration:
@@ -117,9 +117,9 @@ Resources:
       RequiresCompatibilities:
         - FARGATE
       ContainerDefinitions:
-        - Name: remnisense-server
+        - Name: api
           Essential: true
-          Image: !Ref Image
+          Image: !Ref ApiImage
           PortMappings:
             - ContainerPort: 80
           LogConfiguration:
