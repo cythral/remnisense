@@ -89,7 +89,7 @@ Resources:
       TargetType: ip
       VpcId: !ImportValue cfn-utilities:VpcId
       Protocol: HTTP
-      Port: 80
+      Port: 8080
       HealthCheckPath: /api
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
@@ -128,7 +128,7 @@ Resources:
           AssignPublicIp: ENABLED
       LoadBalancers:
         - ContainerName: api
-          ContainerPort: 80
+          ContainerPort: 8080
           TargetGroupArn: !Ref ApiTargetGroup
         - ContainerName: client
           ContainerPort: 80
@@ -154,7 +154,7 @@ Resources:
           Essential: true
           Image: !Ref ApiImage
           PortMappings:
-            - ContainerPort: 80
+            - ContainerPort: 8080
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -163,7 +163,7 @@ Resources:
               awslogs-stream-prefix: !Sub ${AWS::StackName}-api
           Environment:
             - Name: PORT
-              Value: 80
+              Value: 8080
             - Name: BASE_PATH
               Value: /api
             - Name: DB_HOST
