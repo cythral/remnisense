@@ -8,7 +8,7 @@ COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
 
 WORKDIR /app
-COPY Backend .
+COPY . .
 RUN npm install
 
 ENTRYPOINT /entrypoint.sh
