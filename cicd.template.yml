@@ -115,10 +115,10 @@ Resources:
                 - !ImportValue cfn-metadata:DevAccountId
                 - !ImportValue cfn-metadata:ProdAccountId
 
-  BuildProject:
+  ConfigBuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: !Sub ${AWS::StackName}-build
+      Name: !Sub ${AWS::StackName}-config-build
       ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
       EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
       Environment:
@@ -203,7 +203,7 @@ Resources:
                 PollForSourceChanges: false
         - Name: Build
           Actions:
-            - Name: Build
+            - Name: Config
               ActionTypeId:
                 Category: Build
                 Provider: CodeBuild
@@ -214,7 +214,7 @@ Resources:
               OutputArtifacts:
                 - Name: buildResults
               Configuration:
-                ProjectName: !Ref BuildProject
+                ProjectName: !Ref ConfigBuildProject
             - Name: Api
               ActionTypeId:
                 Category: Build
