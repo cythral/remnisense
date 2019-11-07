@@ -11,8 +11,16 @@ phases:
   
   build:
     commands:
+      # Server
       - docker build -t $IMAGE .
       - docker push $IMAGE
+
+      # Client
+      - cd client
+      - npm install
+      - npm run build
+      - npm test
+      - cd ../
 
       - ./deploy/create-config-files.sh $IMAGE
 
