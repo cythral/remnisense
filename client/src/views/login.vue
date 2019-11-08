@@ -86,7 +86,15 @@ export default {
             failed: false
         };
     },
-    methods: {
+    mounted: function()
+    {
+        let apiToken = this.$store.state.apiToken;
+
+        if(typeof apiToken !== "undefined") {
+            this.$router.push("/");
+        }
+    },
+    methods: {        
         login: async function() 
         {
             const response = await fetch("/api/login", {
@@ -103,7 +111,9 @@ export default {
             }
 
             Vue.set(this, "failed", false);
-            const responseJson = await response.json();
+            
+            const payload = await response.json();
+            Vue.set(this.$store.state, "apiToken", payload.token);
 
             this.$router.push("/");
         }
