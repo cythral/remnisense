@@ -132,4 +132,7 @@ route("post","/login", async function(req, res, next) {
         res.status(401).json({ msg: "Password is incorrect" });
       }
     }
-*/});
+
+*/
+res.status(200);
+});
