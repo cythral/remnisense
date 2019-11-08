@@ -76,9 +76,16 @@ form {
 </style>
 
 <script>
+import Vue from "vue";
+
 export default {
     name: "login",
-    props: ["failed"],
+    data: function()
+    {
+        return {
+            failed: false
+        };
+    },
     methods: {
         login: async function() 
         {
@@ -91,10 +98,14 @@ export default {
             });
 
             if(response.status !== 200) {
-                this.failed = true;
+                Vue.set(this, "failed", true);
+                return;
             }
 
+            Vue.set(this, "failed", false);
             const responseJson = await response.json();
+
+            this.$router.push("/");
         }
     }
 }
