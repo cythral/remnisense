@@ -7,8 +7,8 @@
         </div>
 
         <div class="field">
-            <label for="login-email">Email:</label>
-            <input v-model="email" id="login-email" type="email" placeholder="john.doe@example.com">
+            <label for="login-name">Username:</label>
+            <input v-model="name" id="login-name" placeholder="john.doe">
         </div>
         
         <div class="field">
@@ -85,7 +85,7 @@ export default {
             const response = await fetch("/api/login", {
                 method: "POST",
                 body: JSON.stringify({
-                    email: this.email,
+                    name: this.name,
                     password: this.password
                 })
             });

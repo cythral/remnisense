@@ -15,11 +15,11 @@ describe("login", () =>
     {
         fetch.mockResponse('{}');
         
-        const email = "john@example.com";
+        const name = "john";
         const password = "password";
         const login = new Vue(Login).$mount();
 
-        login.email = email;
+        login.name = name;
         login.password = password;
         
         await login.login();
@@ -27,7 +27,7 @@ describe("login", () =>
         expect(fetch).toHaveBeenCalledWith("/api/login", expect.objectContaining({
             method: "POST",
             body: JSON.stringify({
-                email,
+                name,
                 password
             })
         }));
