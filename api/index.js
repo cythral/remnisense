@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const passport = require('passport');
+const passportJWT = require('passport-jwt');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -10,6 +12,26 @@ const DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST;
 const DB_NAME = process.env.DB_NAME;
 
+let ExtractJwt = passportJWT.ExtractJwt;
+let JwtStrategy = passportJWT.Strategy;
+let jwtOptions = {};
+
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+jwtOptions.secretOrKey = 'dankmemes';
+let strategy = new JwtStrategy(jwtOptions, 
+    function(jwt_payload, next)
+    {
+        if (user)
+        {
+            next(null, user);
+        } else 
+        {
+            next(null,false);
+        }
+
+    });
+passport.use(strategy);
+
 function route(method, path, handler) 
 {
     let fullPath = BASE_PATH + path.trimEnd("/");
@@ -17,6 +39,7 @@ function route(method, path, handler)
     return app[method](fullPath, handler);
 }
 
+app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
 
@@ -76,7 +99,6 @@ const getUser = async obj =>
 };
 
 
-
 route("get", "/", function(req, res)
 {
     res.json({message: 'App is running'});
@@ -92,4 +114,26 @@ route("post", "/register", function(req, res)
     const{name, password} = req.body;
     createUser({name,password}).then(user =>
         res.json({user, msg: 'account created'}));
+});
+
+route("post", "/login", async function(req, res, next)
+{
+    const {name, password} = req.body;
+    if(name && password)
+    {
+        let user = await getUser({name: name});
+        if(!user)
+        {
+            res.status(401).json({message: 'No such user found'});
+        }
+        if (user.password === password)
+        {
+            let payload = {id: user.id};
+            let token = jwt.sign(payload, jwtOptions.secretOrKey);
+            res.json({msg: 'ok', token: token});
+        } else
+        {
+            res.status(401).json({msg:'Password is incorrecct'});
+        }
+    }
 });
