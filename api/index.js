@@ -17,10 +17,12 @@ let JwtStrategy = passportJWT.Strategy;
 let jwtOptions = {};
 
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-jwtOptions.secretOrKey = 'dankmemes';
+jwtOptions.secretOrKey = 'wowwow';
 let strategy = new JwtStrategy(jwtOptions, 
     function(jwt_payload, next)
     {
+        console.log('payload received', jwt_payload);
+        let user = getUser({id: jwt_payload.id});
         if (user)
         {
             next(null, user);
@@ -64,19 +66,13 @@ sequelize.authenticate().then(() => console.log('Connection established')).catch
 
 const User = sequelize.define('user', 
 {
-    name: 
-    {
-        type: Sequelize.STRING,
-    },
-    password:
-    {
-        type: Sequelize.STRING,
-    },
+    name: Sequelize.STRING,
+    password: Sequelize.STRING
 });
 
 User.sync()
 .then(() => console.log('User Table Created Successfully'))
-.catch(err => console.log ('Unable to create the user table'));
+.catch(err => console.log ('Unable to create the user table' + err));
 
 const createUser = async ({name, password}) => 
 {
@@ -116,24 +112,24 @@ route("post", "/register", function(req, res)
         res.json({user, msg: 'account created'}));
 });
 
-route("post", "/login", async function(req, res, next)
-{
-    const {name, password} = req.body;
-    if(name && password)
+route("post","/login", async function(req, res, next) { 
+   /* const { name, password } = req.body;
+    if (name && password) 
     {
-        let user = await getUser({name: name});
-        if(!user)
-        {
-            res.status(401).json({message: 'No such user found'});
-        }
-        if (user.password === password)
-        {
-            let payload = {id: user.id};
-            let token = jwt.sign(payload, jwtOptions.secretOrKey);
-            res.json({msg: 'ok', token: token});
-        } else
-        {
-            res.status(401).json({msg:'Password is incorrecct'});
-        }
+      returned
+      let user = await getUser({ name });
+      if (!user) 
+      {
+        res.status(401).json({ msg: "No such user found", user });
+      }
+     if (user.password === password) 
+     {
+        let payload = { id: user.id };
+        let token = jwt.sign(payload, jwtOptions.secretOrKey);
+        res.json({ msg: "ok", token: token });
+      } else 
+      {
+        res.status(401).json({ msg: "Password is incorrect" });
+      }
     }
-});
+*/});
