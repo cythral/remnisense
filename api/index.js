@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
 const app = express();
@@ -112,27 +113,25 @@ route("post", "/register", function(req, res)
         res.json({user, msg: 'account created'}));
 });
 
-route("post","/login", async function(req, res, next) { 
-   /* const { name, password } = req.body;
+route("post","/login", async function(req, res) 
+{
+    const {name, password} = req.body;
     if (name && password) 
     {
-      returned
-      let user = await getUser({ name });
-      if (!user) 
-      {
-        res.status(401).json({ msg: "No such user found", user });
-      }
-     if (user.password === password) 
-     {
-        let payload = { id: user.id };
-        let token = jwt.sign(payload, jwtOptions.secretOrKey);
-        res.json({ msg: "ok", token: token });
-      } else 
-      {
-        res.status(401).json({ msg: "Password is incorrect" });
-      }
+        let user = await getUser({ name });
+        console.log(user);  
+        if (!user) 
+        {
+            res.status(401).json({ msg: "No such user found", user}).end;
+        }
+        if (user.password === password) 
+        {
+            let payload = { id: user.id };
+            let token = jwt.sign(payload, jwtOptions.secretOrKey);
+            res.json({ msg: "ok", token: token }).end;
+        } else 
+        {
+            res.status(401).json({ msg: "Password is incorrect" }).end;
+        }
     }
-
-*/
-res.status(200);
 });
