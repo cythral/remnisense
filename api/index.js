@@ -115,23 +115,32 @@ route("post", "/register", function(req, res)
 
 route("post","/login", async function(req, res) 
 {
-    const {name, password} = req.body;
-    if (name && password) 
+    try
     {
-        let user = await getUser({ name });
-        console.log(user);  
-        if (!user) 
+        const {name, password} = req.body;
+        
+        if (name && password) 
         {
-            res.status(401).json({ msg: "No such user found", user}).end;
+            let user = await getUser({ name });
+            console.log(user);  
+            if (!user) 
+            {
+                res.status(401).json({ msg: "No such user found", user}).end();
+            }
+            if (user.password === password) 
+            {
+                let payload = { id: user.id };
+                let token = jwt.sign(payload, jwtOptions.secretOrKey);
+                res.json({ msg: "ok", token: token }).end();
+            } else 
+            {
+                res.status(401).json({ msg: "Password is incorrect" }).end();
+            }
         }
-        if (user.password === password) 
-        {
-            let payload = { id: user.id };
-            let token = jwt.sign(payload, jwtOptions.secretOrKey);
-            res.json({ msg: "ok", token: token }).end;
-        } else 
-        {
-            res.status(401).json({ msg: "Password is incorrect" }).end;
-        }
+    } 
+    catch(error) 
+    {
+        console.error(error);
+        res.status(500).end();
     }
 });
