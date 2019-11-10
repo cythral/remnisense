@@ -132,10 +132,15 @@ route("post","/login", async function(req, res)
                 let payload = { id: user.id };
                 let token = jwt.sign(payload, jwtOptions.secretOrKey);
                 res.json({ msg: "ok", token: token }).end();
-            } else 
+            } 
+            else 
             {
                 res.status(401).json({ msg: "Password is incorrect" }).end();
             }
+        }
+        else
+        {
+            res.status(400).end();
         }
     } 
     catch(error) 
