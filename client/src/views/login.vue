@@ -99,10 +99,13 @@ export default {
         {
             const response = await fetch("/api/login", {
                 method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                },
                 body: JSON.stringify({
                     name: this.name,
-                    password: this.password
-                })
+                    password: this.password,
+                }),
             });
 
             if(response.status !== 200) {

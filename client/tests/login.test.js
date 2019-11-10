@@ -71,10 +71,13 @@ describe("login", () =>
 
         expect(fetch).toHaveBeenCalledWith("/api/login", expect.objectContaining({
             method: "POST",
+            headers: {
+                "content-type": "application/json",
+            },
             body: JSON.stringify({
                 name,
-                password
-            })
+                password,
+            }),
         }));
     });
 
