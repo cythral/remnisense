@@ -7,9 +7,9 @@ window.Vue = Vue;
 
 export default new Vuex.Store({
     plugins: [
-        new VuexPersist({
+        (new VuexPersist({
             key: 'remnisense-store',
             storage: localStorage
-        })
+        })).plugin
     ]
 });
