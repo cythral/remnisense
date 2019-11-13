@@ -16,7 +16,12 @@ describe("dashboard", () =>
         localVue = createLocalVue();
         localVue.use(Vuex);
 
-        store = new Store();
+        store = new Store({
+            state: {
+                apiToken: null
+            }
+        });
+
         router = {
             push: jest.fn()
         };
