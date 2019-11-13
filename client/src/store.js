@@ -6,6 +6,9 @@ import VuexPersist from "vuex-persist";
 window.Vue = Vue;
 
 export default new Vuex.Store({
+    state: {
+        apiToken: null
+    },
     plugins: [
         (new VuexPersist({
             key: 'remnisense-store',

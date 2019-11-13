@@ -90,7 +90,7 @@ export default {
     {
         let apiToken = this.$store.state.apiToken;
 
-        if(typeof apiToken !== "undefined") {
+        if(apiToken == null) {
             this.$router.push("/");
         }
     },
