@@ -12,7 +12,7 @@ export default new Vuex.Store({
     plugins: [
         (new VuexPersist({
             key: 'remnisense-store',
-            storage: localStorage
+            storage: window.localStorage
         })).plugin
     ]
 });
