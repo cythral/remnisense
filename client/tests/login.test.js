@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Vuex, { Store } from "vuex";
 import Login from "../src/views/login.vue";
 import { shallowMount, createLocalVue } from "@vue/test-utils";
+import store from "../src/store";
 
 const ERROR_CLASS = ".error";
 
@@ -11,15 +12,17 @@ describe("login", () =>
 {
     let wrapper;
     let localVue;
-    let store;
+    // let store;
     let router;
 
     beforeEach(() => 
     {
+
         localVue = createLocalVue();
         localVue.use(Vuex);
 
-        store = new Store();
+        store.commit("reset");
+
         router = {
             push: jest.fn()
         };
@@ -40,11 +43,7 @@ describe("login", () =>
 
     it("should redirect to / if the user is already logged in", async () =>
     {
-        store = new Store({
-            state: {
-                apiToken: "example token of already logged in user"
-            }
-        });
+        store.commit("setApiToken", { apiToken: "example token" });
 
         wrapper = shallowMount(Login, {
             localVue,

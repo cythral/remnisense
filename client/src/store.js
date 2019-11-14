@@ -9,6 +9,15 @@ export default new Vuex.Store({
     state: {
         apiToken: null
     },
+    mutations: {
+        reset(state) {
+            Vue.set(state, "apiToken", null);
+        },
+
+        setApiToken(state, payload) {
+            Vue.set(state, "apiToken", payload.apiToken);
+        }
+    },
     plugins: [
         (new VuexPersist({
             key: 'remnisense-store',

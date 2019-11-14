@@ -116,7 +116,7 @@ export default {
             Vue.set(this, "failed", false);
             
             const payload = await response.json();
-            Vue.set(this.$store.state, "apiToken", payload.token);
+            this.$store.commit("setApiToken", { apiToken: payload.token });
 
             this.$router.push("/");
         }
