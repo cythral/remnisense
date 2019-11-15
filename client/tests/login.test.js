@@ -12,7 +12,6 @@ describe("login", () =>
 {
     let wrapper;
     let localVue;
-    // let store;
     let router;
 
     beforeEach(() => 
