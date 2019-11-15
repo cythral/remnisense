@@ -4,6 +4,8 @@ const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
+const promisify = require("util").promisify;
+const sleep = promisify(setTimeout);
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -46,10 +48,7 @@ app.use(passport.initialize());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true }));
 
-app.listen(PORT, function()
-{
-    console.log('Running on port 3000');
-});
+var User;
 
 const sequelize = new Sequelize
 ({
@@ -63,17 +62,29 @@ const sequelize = new Sequelize
     }
 });
 
-sequelize.authenticate().then(() => console.log('Connection established')).catch(err => console.error('unable to connect to database', err));
-
-const User = sequelize.define('user', 
+User = sequelize.define('user', 
 {
     name: Sequelize.STRING,
     password: Sequelize.STRING
 });
 
-User.sync()
-.then(() => console.log('User Table Created Successfully'))
-.catch(err => console.log ('Unable to create the user table' + err));
+Sets = sequelize.define('set',
+{
+    user_id: Sequelize.INTEGER,
+    name: Sequelize.STRING
+});
+
+async function sync() {
+    try {
+        await sequelize.authenticate();
+        await User.sync();
+        console.log("Succesfully created the users table");
+    } catch(error) {
+        console.error("An error occurred trying to create the users table: ", error);
+        await sleep(1000);
+        await sync();
+    }
+}
 
 const createUser = async ({name, password}) => 
 {
@@ -95,7 +106,6 @@ const getUser = async obj =>
     );
 };
 
-
 route("get", "/", function(req, res)
 {
     res.json({message: 'App is running'});
@@ -104,6 +114,22 @@ route("get", "/", function(req, res)
 route("get", "/users", function(req, res)
 {
     getAllUsers().then(user => res.json(user));
+});
+
+route("get", "/users/:user/sets", function(req, res)
+{
+    if(req.params.user === "me") {  // feed test data
+        res.json([
+            {
+                id: 1,
+                name: "Test Set 1"
+            },
+            {
+                id: 2,
+                name: "Test Set 2"
+            }
+        ]);
+    }
 });
 
 route("post", "/register", function(req, res)
@@ -149,3 +175,13 @@ route("post","/login", async function(req, res)
         res.status(500).end();
     }
 });
+
+void async function() 
+{
+    await sync();
+    
+    app.listen(PORT, function()
+    {
+        console.log('Running on port 3000');
+    });
+}();

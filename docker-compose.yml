@@ -1,0 +1,56 @@
+version: '3.4'
+services:
+  proxy:
+    build: .
+    depends_on:
+      - client
+      - api
+    networks:
+      - backend
+    ports:
+      - 80:80
+
+  client:
+    build: client
+    networks:
+      - backend
+    volumes:
+      - ./client/dist:/var/www
+    
+  api:
+    build: api
+    restart: unless-stopped
+    entrypoint: npm start
+    depends_on:
+      - mysql
+    volumes:
+      - ./api:/app
+    networks:
+      - backend
+    environment:
+      - PORT=80
+      - BASE_PATH=/api
+      - DB_HOST=mysql
+      - DB_USER=${REMNISENSE_USER}
+      - DB_PASSWORD=${REMNISENSE_PASSWORD}
+      - DB_NAME=${REMNISENSE_DATABASE}
+
+  mysql:
+    image: mariadb/server
+    networks:
+      - backend
+    volumes:
+      - data-store:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_DATABASE=${REMNISENSE_DATABASE}
+      - MARIADB_RANDOM_ROOT_PASSWORD=true
+      - MARIADB_USER=${REMNISENSE_USER}
+      - MARIADB_PASSWORD=${REMNISENSE_PASSWORD}
+
+volumes:
+  data-store:
+
+networks:
+  backend:

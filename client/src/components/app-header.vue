@@ -1,7 +1,7 @@
 <template>
     <header>
         <h1>
-            <a href="/" rel="home">Remnisense</a>
+            <router-link to="/">Remnisense</router-link>
         </h1>
     </header>
 </template>
