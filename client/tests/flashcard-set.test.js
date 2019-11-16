@@ -3,6 +3,8 @@ import { shallowMount, createLocalVue } from "@vue/test-utils";
 import FlashcardSet from "../src/components/flashcard-set.vue";
 import store from "../src/store";
 
+console.error = jest.fn();
+
 describe("flashcard-set", () => 
 {
     let wrapper;
@@ -16,6 +18,7 @@ describe("flashcard-set", () =>
         localVue.use(Vuex);
 
         store.commit("reset");
+        store.state.sets[1] = 
 
         router = {
             push: jest.fn()
