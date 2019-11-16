@@ -80,13 +80,17 @@ Sets = sequelize.define('set',
     name: Sequelize.STRING
 });
 
-async function sync() {
-    try {
+async function sync() 
+{
+    try
+    {
         await sequelize.authenticate();
         await User.sync();
         await Sets.sync();
         console.log("Succesfully created the users table");
-    } catch(error) {
+    } 
+    catch(error) 
+    {
         console.error("An error occurred trying to create the users table: ", error);
         await sleep(1000);
         await sync();
@@ -126,7 +130,8 @@ route("get", "/users", function(req, res)
 route("get", "/users/:user/sets", async function(req, res)
 {
     const user_id = req.params.user === "me" ? req.user.id : req.params.user;
-    const results = await Sets.findAll({
+    const results = await Sets.findAll
+    ({
         where: {
             user_id
         }
@@ -144,8 +149,47 @@ route("post", "/users/:user/sets", async function(req, res)
     const payload = req.body;
     payload.user_id = req.user.id;
 
-    const result = await Sets.create(payload);
-    res.status(200).json(result);
+    try 
+    {
+        await Sets.create(payload);
+        res.status(200).json(payload);
+    } 
+    catch(error) 
+    {
+        console.error(error);
+        json.status(500).end();
+    }
+}, true);
+
+route("patch", "/users/:user/sets/:set", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+
+    const payload = req.body;
+    payload.user_id = req.user.id;
+
+    try 
+    {
+        await Sets.update
+        (
+            payload,
+            {
+                where: {
+                    user_id: payload.user_id,
+                    id: payload.id
+                }
+            }
+        );
+
+        res.status(200).json(payload);
+    } 
+    catch(error) 
+    {
+        console.error(error);
+        res.status(500).end();
+    }
 }, true);
 
 route("post", "/register", function(req, res)

@@ -1,6 +1,6 @@
 <template>
     <main>
-        <flashcard-set v-for="set in sets" :key="set.id" v-bind:name="set.name"></flashcard-set>
+        <flashcard-set v-for="set in sets" :key="set.id" :id="set.id"></flashcard-set>
     </main>
 </template>
 

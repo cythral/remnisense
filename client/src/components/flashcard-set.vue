@@ -1,6 +1,6 @@
 <template>
     <div class="flashcard-set">
-        <h2>{{ name }}</h2>
+        <input name="name" type="text" v-model="name" v-on:change="updateName()" />
     </div>
 </template>
 
@@ -13,8 +13,19 @@
     border-radius: 10px;
     min-height: 200px;
 
-    h2 {
-        font-weight: normal;
+    input[name="name"] {
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        color: $primaryColor;
+        border-bottom: 1px solid transparent;
+        transition: border-color .5s;
+        padding: 5px 0; 
+        width: 100%;
+
+        &:hover, &:focus {
+            border-color: $primaryColor;
+        }
     }
 }
 
@@ -23,6 +34,32 @@
 <script>
 export default {
     name: "flashcard-set",
-    props: ["name"]
+    props: ["id"],
+    data: function()
+    {
+        return {
+            name: null
+        };
+    },
+    mounted: function()
+    {
+        try {
+            const sets = this.$store.state.sets;
+            const state = sets[this.id];
+
+            Vue.set(this, "name", state.name);
+        } catch(error) {
+            console.error("Error updating flashcard set component with state values: ", error);
+        }
+    },
+    methods: {
+        updateName: function()
+        {
+            this.$store.commit("updateSet", {
+                id: this.id,
+                name: this.name,
+            });
+        }
+    }
 }
 </script>

@@ -11,21 +11,40 @@ export default new Vuex.Store({
         sets: {}
     },
     mutations: {
-        reset(state) {
+        reset(state) 
+        {
             Vue.set(state, "apiToken", null);
         },
 
-        setApiToken(state, payload) {
+        setApiToken(state, payload) 
+        {
             Vue.set(state, "apiToken", payload.apiToken);
         },
 
-        upsertSet(state, payload) {
-            Vue.set(state.sets, payload.id, payload);
-            console.log("Added set: ", JSON.stringify(payload));
+        async updateSet(state, payload) 
+        {
+            try {
+                const response = await fetch(`/api/users/me/sets/${payload.id}`, {
+                    method: "PATCH",
+                    headers: {
+                        "content-type": "application/json",
+                        "authorization": `Bearer ${this.state.apiToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseJson = await response.json();
+                console.log(responseJson);
+
+                Vue.set(state.sets, payload.id, responseJson);
+            } catch(error) {
+                console.error(error);
+            }
         }
     },
     actions: {
-        async getAllSets() {
+        async getAllSets() 
+        {
             Vue.set(this.state, "sets", {});
 
             if(this.state.apiToken === null) {
@@ -41,7 +60,7 @@ export default new Vuex.Store({
             });
 
             const sets = await response.json();
-            sets.map(set => this.commit("upsertSet", set));
+            sets.map(set => Vue.set(this.state.sets, set.id, set));
         }
     },
     plugins: [

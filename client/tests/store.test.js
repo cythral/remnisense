@@ -46,10 +46,10 @@ describe("store", () =>
 
         it("should delete sets that no longer exist", async () =>
         {
-            store.commit("upsertSet", {
+            store.state.sets[1] = {
                 id: 1,
                 name: "Test Set 1"
-            });
+            };
 
             fetch.mockResponse(JSON.stringify([
                 {
