@@ -1,6 +1,6 @@
 <template>
     <div class="flashcard-set">
-        <input name="name" type="text" v-model="name" v-on:change="updateName()" />
+        <input name="name" type="text" v-model="name" v-on:change="updateName()" placeholder="Unnamed Set" />
     </div>
 </template>
 
@@ -19,7 +19,7 @@
         font-size: 1.5em;
         color: $primaryColor;
         border-bottom: 1px solid transparent;
-        transition: border-color .5s;
+        transition: border-color .2s;
         padding: 5px 0; 
         width: 100%;
 
@@ -38,7 +38,8 @@ export default {
     data: function()
     {
         return {
-            name: null
+            name: null,
+            new: false,
         };
     },
     mounted: function()
@@ -48,6 +49,13 @@ export default {
             const state = sets[this.id];
 
             Vue.set(this, "name", state.name);
+            
+            if(state.new) {
+                let nameInput = this.$el.querySelector('[name="name"]');
+                nameInput.focus();
+                
+                delete state.new;
+            }
         } catch(error) {
             console.error("Error updating flashcard set component with state values: ", error);
         }

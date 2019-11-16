@@ -11,6 +11,20 @@ describe("flashcard-set", () =>
     let localVue;
     let router;
 
+    function mount(id = 1) {
+        wrapper = shallowMount(FlashcardSet, {
+            localVue,
+            store,
+            attachToDocument: true,
+            propsData: {
+                id
+            },
+            mocks: {
+                $router: router
+            }
+        });
+    }
+
     beforeEach(() => 
     {
 
@@ -18,19 +32,12 @@ describe("flashcard-set", () =>
         localVue.use(Vuex);
 
         store.commit("reset");
-        store.state.sets[1] = 
 
         router = {
             push: jest.fn()
         };
 
-        wrapper = shallowMount(FlashcardSet, {
-            localVue,
-            store,
-            mocks: {
-                $router: router
-            }
-        });
+        mount();
     });
 
     describe("title", () =>

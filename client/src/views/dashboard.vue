@@ -1,10 +1,18 @@
 <template>
     <main>
+        <div class="actions">
+            <a class="btn create-flashcard-set" v-on:click.prevent="insertSet()">New Set</a>
+        </div>
+
         <flashcard-set v-for="set in sets" :key="set.id" :id="set.id"></flashcard-set>
     </main>
 </template>
 
 <style scoped lang="scss">
+.actions {
+    margin: 15px;
+    text-align: right;
+}
 </style>
 
 <script>
@@ -26,6 +34,13 @@ export default {
         }
 
         await this.$store.dispatch("getAllSets");
+    },
+    methods:
+    {
+        insertSet: async function()
+        {
+            await this.$store.commit("insertSet");
+        }
     },
     computed: 
     {

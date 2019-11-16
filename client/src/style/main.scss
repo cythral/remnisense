@@ -11,3 +11,27 @@ $primaryTextColor: white;
 a {
     text-decoration: none;
 }
+
+.btn {
+    display: inline-block;
+    background-color: $primaryColor;
+    color: $primaryTextColor;
+    padding: 15px;
+    height: 50px;
+    line-height: 20px;
+    min-width: 200px;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid $primaryColor;
+    border-radius: 5px;
+    transition: background-color .2s, color .2s;
+
+    &:hover {
+        background-color: $primaryTextColor;
+        color: $primaryColor;
+    }
+
+    @media(max-width: 768px) {
+        width: 100%;
+    }
+}

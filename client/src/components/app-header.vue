@@ -17,9 +17,7 @@ header {
 
     h1 {
         a {
-            text-transform: uppercase;
             font-weight: normal;
-            letter-spacing: 1px;
             color: white;
         }
     }

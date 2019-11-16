@@ -5,15 +5,18 @@ import VuexPersist from "vuex-persist";
 // required when bundled
 window.Vue = Vue;
 
+const originalState = {
+    apiToken: null,
+    sets: {},
+};
+
 export default new Vuex.Store({
-    state: {
-        apiToken: null,
-        sets: {}
-    },
+    state: originalState,
     mutations: {
         reset(state) 
         {
             Vue.set(state, "apiToken", null);
+            Vue.set(state, "sets", {});
         },
 
         setApiToken(state, payload) 
@@ -28,7 +31,7 @@ export default new Vuex.Store({
                     method: "PATCH",
                     headers: {
                         "content-type": "application/json",
-                        "authorization": `Bearer ${this.state.apiToken}`
+                        "authorization": `Bearer ${state.apiToken}`
                     },
                     body: JSON.stringify(payload)
                 });
@@ -37,6 +40,27 @@ export default new Vuex.Store({
                 console.log(responseJson);
 
                 Vue.set(state.sets, payload.id, responseJson);
+            } catch(error) {
+                console.error(error);
+            }
+        },
+
+        async insertSet(state, payload = { name: null }) 
+        {
+            try {
+                const response = await fetch("/api/users/me/sets", {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        "authorization": `Bearer ${state.apiToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const responseJson = await response.json();
+                responseJson.new = true;
+                
+                Vue.set(state.sets, responseJson.id, responseJson);
             } catch(error) {
                 console.error(error);
             }

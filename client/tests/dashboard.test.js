@@ -14,6 +14,7 @@ describe("dashboard", () =>
 
     beforeEach(() => 
     {
+        fetch.mockReset();
         localVue = createLocalVue();
         localVue.use(Vuex);
         
@@ -68,5 +69,58 @@ describe("dashboard", () =>
         });
 
         expect(wrapper.findAll(FlashcardSet).length).toBe(2);
+    });
+
+    describe("create new flashcard set button", () =>
+    {
+        let button;
+
+        beforeEach(() =>
+        {
+            
+            fetch.mockReset();
+            store.state.sets = {};
+            button = wrapper.find(".create-flashcard-set");
+        });
+
+        it("clicking on it should post /api/users/me/sets", async () =>
+        {
+            const apiToken = "Test token";
+            store.commit("setApiToken", { apiToken })
+
+            fetch.mockResponse(JSON.stringify({
+                id: 1,
+                name: null
+            }));
+
+            button.trigger("click");
+
+            expect(fetch).toHaveBeenCalledWith("/api/users/me/sets", expect.objectContaining({
+                method: "POST",
+                headers: {
+                    "authorization": `Bearer ${apiToken}`,
+                    "content-type": "application/json"
+                }
+            }));
+        });
+
+        it("clicking on it should create a new flashcard set with no name", async () =>
+        {
+            const id = 2;
+            const name = null;            
+            fetch.mockResponse(JSON.stringify({
+                id,
+                name
+            }));
+
+            expect(id in store.state.sets).toBe(false);
+
+            await button.trigger("click");
+            await wrapper.vm.$nextTick();
+
+            let set = store.state.sets[id];
+            expect(set.name).toBe(name);
+            expect(set.id).toBe(id);
+        });
     });
 });

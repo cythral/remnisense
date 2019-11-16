@@ -151,7 +151,9 @@ route("post", "/users/:user/sets", async function(req, res)
 
     try 
     {
-        await Sets.create(payload);
+        let response = await Sets.create(payload);
+        payload.id = response.id;
+
         res.status(200).json(payload);
     } 
     catch(error) 
