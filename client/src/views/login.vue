@@ -16,9 +16,7 @@
                 <label for="login-password">Password:</label>
                 <input v-model="password" id="login-password" type="password" placeholder="password">
             </div>
-
             
-
             <input type="submit" value="Login">
         </form>
     </div>

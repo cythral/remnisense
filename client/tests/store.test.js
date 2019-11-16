@@ -43,5 +43,23 @@ describe("store", () =>
 
             expect(fetch).not.toHaveBeenCalled();
         });
+
+        it("should delete sets that no longer exist", async () =>
+        {
+            store.commit("upsertSet", {
+                id: 1,
+                name: "Test Set 1"
+            });
+
+            fetch.mockResponse(JSON.stringify([
+                {
+                    id: 2,
+                    name: "Test Set 2"
+                }
+            ]));
+
+            await store.dispatch("getAllSets");
+            expect(store.state.sets[1]).toBe(undefined);
+        });
     });
 });

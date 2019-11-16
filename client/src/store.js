@@ -26,6 +26,8 @@ export default new Vuex.Store({
     },
     actions: {
         async getAllSets() {
+            Vue.set(this.state, "sets", {});
+
             if(this.state.apiToken === null) {
                 return;
             }

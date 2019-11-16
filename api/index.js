@@ -21,11 +21,12 @@ let jwtOptions = {};
 
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = 'wowwow';
+
 let strategy = new JwtStrategy(jwtOptions, 
-    function(jwt_payload, next)
+    async function(jwt_payload, next)
     {
         console.log('payload received', jwt_payload);
-        let user = getUser({id: jwt_payload.id});
+        let user = await getUser({id: jwt_payload.id});
         if (user)
         {
             next(null, user);
@@ -34,14 +35,19 @@ let strategy = new JwtStrategy(jwtOptions,
             next(null,false);
         }
 
-    });
+    }
+);
+
 passport.use(strategy);
 
-function route(method, path, handler) 
+function route(method, path, handler, authenticate = false) 
 {
     let fullPath = BASE_PATH + path.trimEnd("/");
     fullPath = fullPath === "" ? "/" : fullPath;
-    return app[method](fullPath, handler);
+
+    return authenticate ?
+        app[method](fullPath, passport.authenticate('jwt', { session: false }), handler) :
+        app[method](fullPath, handler);
 }
 
 app.use(passport.initialize());
@@ -78,6 +84,7 @@ async function sync() {
     try {
         await sequelize.authenticate();
         await User.sync();
+        await Sets.sync();
         console.log("Succesfully created the users table");
     } catch(error) {
         console.error("An error occurred trying to create the users table: ", error);
@@ -116,21 +123,30 @@ route("get", "/users", function(req, res)
     getAllUsers().then(user => res.json(user));
 });
 
-route("get", "/users/:user/sets", function(req, res)
+route("get", "/users/:user/sets", async function(req, res)
 {
-    if(req.params.user === "me") {  // feed test data
-        res.json([
-            {
-                id: 1,
-                name: "Test Set 1"
-            },
-            {
-                id: 2,
-                name: "Test Set 2"
-            }
-        ]);
+    const user_id = req.params.user === "me" ? req.user.id : req.params.user;
+    const results = await Sets.findAll({
+        where: {
+            user_id
+        }
+    });
+
+    return res.json(results);
+}, true);
+
+route("post", "/users/:user/sets", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
     }
-});
+
+    const payload = req.body;
+    payload.user_id = req.user.id;
+
+    const result = await Sets.create(payload);
+    res.status(200).json(result);
+}, true);
 
 route("post", "/register", function(req, res)
 {
