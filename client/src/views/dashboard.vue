@@ -4,7 +4,7 @@
             <a class="btn create-flashcard-set" v-on:click.prevent="insertSet()">New Set</a>
         </div>
 
-        <flashcard-set v-for="set in sets" :key="set.id" :id="set.id"></flashcard-set>
+        <flashcard-set v-for="set in $store.state.sets" :key="set.id" :id="set.id"></flashcard-set>
     </main>
 </template>
 

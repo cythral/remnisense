@@ -78,7 +78,7 @@ export default new Vuex.Store({
                 });
 
                 if(response.status === 200) {
-                    delete state.sets[payload.id];
+                    Vue.delete(state.sets, payload.id);
                 }
             } catch(error) {
                 console.error(error);
