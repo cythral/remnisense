@@ -23,7 +23,6 @@
 </template>
 
 <style scoped lang="scss">
-$fieldHeight: 50px;
 
 .login {
     text-align: center;
@@ -48,7 +47,7 @@ $fieldHeight: 50px;
             width: 100%;
             display: flex;
             padding: 15px 0;
-            height: calc(#{$fieldHeight} - 30px);
+            height: 50px;
             align-items: center;
             justify-items: center;
             border-bottom: 1px solid #333;
@@ -58,17 +57,17 @@ $fieldHeight: 50px;
                 text-align: right;
                 padding: 0 15px;
                 height: 100%;
-                line-height: $fieldHeight;
+                line-height: 20px;
             }
 
             input {
                 flex-basis: 55%;
                 height: 100%;
-                line-height: $fieldHeight;
+                line-height: 50px;
                 font-size: 1.2em;
                 border: none;
                 outline: none;
-                cursor: pointer;
+                cursor: text;
             }
         }
 
@@ -76,9 +75,9 @@ $fieldHeight: 50px;
             background: $primaryColor;
             color: white;
             font-size: 1.2em;
-            height: $fieldHeight;
+            height: 50px;
             border: none;
-            line-height: $fieldHeight;
+            line-height: 50px;
             width: 100%;
             margin: 50px 0;
             cursor: pointer;
