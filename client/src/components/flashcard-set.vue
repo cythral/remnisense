@@ -56,7 +56,7 @@
 </style>
 
 <script>
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default {
     name: "flashcard-set",
