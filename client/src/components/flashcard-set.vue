@@ -1,6 +1,11 @@
 <template>
     <div class="flashcard-set">
-        <input name="name" type="text" v-model="name" v-on:change="updateName()" placeholder="Unnamed Set" />
+        <div class="flashcard-set-top">
+            <input name="name" type="text" v-model="name" v-on:change="updateName()" placeholder="Unnamed Set" />
+            <div class="flashcard-set-actions"> 
+                <font-awesome-icon :icon="trashIcon" class="delete" v-on:click="deleteSet()"></font-awesome-icon>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -13,18 +18,37 @@
     border-radius: 10px;
     min-height: 200px;
 
-    input[name="name"] {
-        background: none;
-        border: none;
-        font-size: 1.5em;
-        color: $primaryColor;
-        border-bottom: 1px solid transparent;
-        transition: border-color .2s;
-        padding: 5px 0; 
-        width: 100%;
+    .flashcard-set-top {
+        display: flex;
 
-        &:hover, &:focus {
-            border-color: $primaryColor;
+        input[name="name"] {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            color: $primaryColor;
+            border-bottom: 1px solid transparent;
+            transition: border-color .2s;
+            padding: 5px 0; 
+            flex-basis: 60%;
+
+            &:hover, &:focus {
+                border-color: $primaryColor;
+            }
+        }
+
+        .flashcard-set-actions {
+            flex-basis: 40%;
+            text-align: right;
+
+            svg {
+                font-size: 1.1em;
+                cursor: pointer;
+                transition: transform .2s;
+
+                &:hover {
+                    transform: scale(1.5);
+                }
+            }
         }
     }
 }
@@ -32,6 +56,8 @@
 </style>
 
 <script>
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 export default {
     name: "flashcard-set",
     props: ["id"],
@@ -40,6 +66,7 @@ export default {
         return {
             name: null,
             new: false,
+            trashIcon: faTrash
         };
     },
     mounted: function()
@@ -66,6 +93,13 @@ export default {
             this.$store.commit("updateSet", {
                 id: this.id,
                 name: this.name,
+            });
+        },
+
+        deleteSet: function()
+        {
+            this.$store.commit("deleteSet", {
+                id: this.id,
             });
         }
     }

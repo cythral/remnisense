@@ -64,6 +64,25 @@ export default new Vuex.Store({
             } catch(error) {
                 console.error(error);
             }
+        },
+
+        async deleteSet(state, payload)
+        {
+            try {
+                const response = await fetch(`/api/users/me/sets/${payload.id}`, {
+                    method: "DELETE",
+                    headers: {
+                        "content-type": "application/json",
+                        "authorization": `Bearer ${state.apiToken}`,
+                    }
+                });
+
+                if(response.status === 200) {
+                    delete state.sets[payload.id];
+                }
+            } catch(error) {
+                console.error(error);
+            }
         }
     },
     actions: {

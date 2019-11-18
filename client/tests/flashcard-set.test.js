@@ -73,4 +73,31 @@ describe("flashcard-set", () =>
             }));
         });
     });
+
+    describe("actions", () =>
+    {
+        it("clicking on the delete icon should delete /api/users/me/sets/:set", async () =>
+        {
+            fetch.mockResponse("{}");
+
+            const id = 1;
+            const apiToken = "Test token";
+
+            store.commit("setApiToken", { apiToken });
+            Vue.set(wrapper.vm, "id", id);
+
+            const deleteBtn = wrapper.find(".delete");
+            deleteBtn.trigger('click');
+            await wrapper.vm.$nextTick();
+
+            expect(fetch).toHaveBeenCalledWith(`/api/users/me/sets/${id}`, {
+                method: "DELETE",
+                headers: expect.objectContaining({
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${apiToken}`
+                })
+            });
+        });
+    });
+    
 });
