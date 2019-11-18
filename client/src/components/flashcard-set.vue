@@ -6,6 +6,13 @@
                 <font-awesome-icon :icon="trashIcon" class="delete" v-on:click="deleteSet()"></font-awesome-icon>
             </div>
         </div>
+
+        <ul>
+            <li>
+                <div><font-awesome-icon :icon="newFlashcardIcon"></font-awesome-icon></div>
+                New Card
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -20,6 +27,7 @@
 
     .flashcard-set-top {
         display: flex;
+        height: 50px;
 
         input[name="name"] {
             background: none;
@@ -38,10 +46,12 @@
 
         .flashcard-set-actions {
             flex-basis: 40%;
+            font-size: 25px;
             text-align: right;
+            padding: 5px 0;
 
             svg {
-                font-size: 1.1em;
+                
                 cursor: pointer;
                 transition: transform .2s;
 
@@ -51,12 +61,46 @@
             }
         }
     }
+
+    ul {
+        list-style-type: none;
+        height: 150px;
+
+        li {
+            margin: 15px;
+            width: 15%;
+            height: 100%;
+            border-radius: 10px;
+            text-align: center;
+
+            &:first-of-type {
+                margin-left: 0;
+                border: 1px dashed $primaryColor;
+                padding-top: 25px;
+                cursor: pointer;
+                transition: background-color .2s, color .2s;
+
+                svg {
+                    font-size: 75px;
+                }
+
+                span {
+                    width: 100%;
+                }
+
+                &:hover {
+                    background-color: $primaryColor;
+                    color: $primaryTextColor;
+                }
+            }
+        }
+    }
 }
 
 </style>
 
 <script>
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default {
     name: "flashcard-set",
@@ -66,6 +110,7 @@ export default {
         return {
             name: null,
             new: false,
+            newFlashcardIcon: faPlus,
             trashIcon: faTrash
         };
     },
