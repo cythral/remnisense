@@ -194,6 +194,30 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
     }
 }, true);
 
+route("delete", "/users/:user/sets/:set", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+
+    try
+    {
+        await Sets.destroy
+        ({
+            where: {
+                id: req.params.set
+            }
+        });
+
+        res.status(200).end();
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500).end();
+    }
+}, true);
+
 route("post", "/register", function(req, res)
 {
     const{name, password} = req.body;
