@@ -5,13 +5,11 @@ import VuexPersist from "vuex-persist";
 // required when bundled
 window.Vue = Vue;
 
-const originalState = {
-    apiToken: null,
-    sets: {},
-};
-
 export default new Vuex.Store({
-    state: originalState,
+    state: {
+        apiToken: null,
+        sets: {}
+    },
     mutations: {
         reset(state) 
         {
@@ -80,6 +78,27 @@ export default new Vuex.Store({
                 if(response.status === 200) {
                     Vue.delete(state.sets, payload.id);
                 }
+            } catch(error) {
+                console.error(error);
+            }
+        },
+
+        async createFlashcard(state, payload)
+        {
+            try {
+                const response = await fetch(`/api/sets/${payload.setId}/cards`, {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        "authorization": `Bearer ${state.apiToken}`
+                    }
+                });
+
+                const responseJson = await response.json();
+                const set = state.sets[payload.setId];
+                set.cards = set.cards || {};
+
+                Vue.set(set.cards, responseJson.id, responseJson);
             } catch(error) {
                 console.error(error);
             }

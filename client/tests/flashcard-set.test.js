@@ -76,17 +76,25 @@ describe("flashcard-set", () =>
 
     describe("actions", () =>
     {
+
+        let id;
+        let apiToken;
+        
+        beforeEach(() =>
+        {
+            id = 1;
+            apiToken = "Test token";
+
+            store.commit("setApiToken", { apiToken });
+            Vue.set(wrapper.vm, "id", id);
+        });
+
+
         it("clicking on the delete icon should delete /api/users/me/sets/:set", async () =>
         {
             fetch.mockResponse("{}");
 
-            const id = 1;
-            const apiToken = "Test token";
-
-            store.commit("setApiToken", { apiToken });
-            Vue.set(wrapper.vm, "id", id);
-
-            const deleteBtn = wrapper.find(".delete");
+            const deleteBtn = wrapper.find(".flashcard-set-delete");
             deleteBtn.trigger('click');
             await wrapper.vm.$nextTick();
 
@@ -98,6 +106,22 @@ describe("flashcard-set", () =>
                 })
             });
         });
+
+        it("clicking the new flashcard button should post /api/sets/:set/cards", async  () =>
+        {
+            fetch.mockResponse("{}");
+
+            const createFlashcardBtn = wrapper.find(".flashcard-set-create-card");
+            createFlashcardBtn.trigger("click");
+            await wrapper.vm.$nextTick();
+
+            expect(fetch).toHaveBeenCalledWith(`/api/sets/${id}/cards`, {
+                method: "POST",
+                headers: expect.objectContaining({
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${apiToken}`
+                })
+            });
+        }); 
     });
-    
 });

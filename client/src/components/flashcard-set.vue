@@ -3,12 +3,12 @@
         <div class="flashcard-set-top">
             <input name="name" type="text" v-model="name" v-on:change="updateName()" placeholder="Unnamed Set" />
             <div class="flashcard-set-actions"> 
-                <font-awesome-icon :icon="trashIcon" class="delete" v-on:click="deleteSet()"></font-awesome-icon>
+                <font-awesome-icon :icon="trashIcon" class="flashcard-set-delete" v-on:click="deleteSet()"></font-awesome-icon>
             </div>
         </div>
 
         <ul>
-            <li>
+            <li class="flashcard-set-create-card" v-on:click="createFlashcard()">
                 <div><font-awesome-icon :icon="newFlashcardIcon"></font-awesome-icon></div>
                 New Card
             </li>
@@ -145,6 +145,13 @@ export default {
         {
             this.$store.commit("deleteSet", {
                 id: this.id,
+            });
+        },
+
+        createFlashcard: function()
+        {
+            this.$store.commit("createFlashcard", {
+                setId: this.id
             });
         }
     }
