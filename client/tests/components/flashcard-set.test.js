@@ -1,7 +1,7 @@
 import Vuex from "vuex";
 import { shallowMount, createLocalVue } from "@vue/test-utils";
-import FlashcardSet from "../src/components/flashcard-set.vue";
-import store from "../src/store";
+import FlashcardSet from "../../src/components/flashcard-set.vue";
+import store from "../../src/store";
 
 console.error = jest.fn();
 

@@ -30,7 +30,10 @@ describe("dashboard", () =>
             store,
             mocks: {
                 $router: router
-            }
+            },
+            stubs: [
+                "font-awesome-icon"
+            ]
         });
     });
 
@@ -43,7 +46,10 @@ describe("dashboard", () =>
             store,
             mocks: {
                 $router: router
-            }
+            },
+            stubs: [
+                "font-awesome-icon"
+            ]
         });
 
         expect(wrapper.vm.$router.push).toHaveBeenCalledWith("/login");
