@@ -262,6 +262,12 @@ route("post","/login", async function(req, res)
     }
 });
 
+route("post", "/logout", async function(req, res)
+{
+    // todo: invalidate tokens
+    res.status(200).end();
+}, true);
+
 void async function() 
 {
     await sync();
