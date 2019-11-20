@@ -80,6 +80,14 @@ Sets = sequelize.define('set',
     name: Sequelize.STRING
 });
 
+Cards = sequelize.define('set',
+{
+    user_id: Sequelize.INTEGER,
+    name: Sequelize.STRING,
+    value: Sequelize.STRING,
+    set_id: Sequelize.INTEGER
+});
+
 async function sync() 
 {
     try
@@ -87,6 +95,7 @@ async function sync()
         await sequelize.authenticate();
         await User.sync();
         await Sets.sync();
+        await Cards.sync();
         console.log("Succesfully created the users table");
     } 
     catch(error) 
@@ -212,6 +221,98 @@ route("delete", "/users/:user/sets/:set", async function(req, res)
         res.status(200).end();
     }
     catch(error)
+    {
+        console.error(error);
+        res.status(500).end();
+    }
+}, true);
+
+route("get", "/users/:user/sets/set:/cards", async function(req, res)
+{
+    const user_id = req.params.user === "me" ? req.user.id : req.params.user;
+    const set_id = req.params.set === "" ? req.set.id : req.params.set;
+    const results = await Cards.findAll
+    ({
+        where: {
+            user_id,
+            set_id
+        }
+    });
+
+    return res.json(results);
+}, true);
+
+route("post", "/users/:user/sets/:set/cards", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+
+    const payload = req.body;
+    payload.user_id = req.user.id;
+
+    try 
+    {
+        let response = await Cards.create(payload);
+        payload.id = response.id;
+        res.status(200).json(payload);
+    } 
+    catch(error) 
+    {
+        console.error(error);
+        json.status(500).end();
+    }
+}, true);
+
+route("delete", "/users/:user/sets/:set/cards/:card", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+
+    try
+    {
+        await Cards.destroy
+        ({
+            where: {
+                id: req.params.cards
+            }
+        });
+
+        res.status(200).end();
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500).end();
+    }
+}, true);
+
+route("patch", "/users/:user/sets/:set", async function(req, res)
+{
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+
+    const payload = req.body;
+    payload.user_id = req.user.id;
+
+    try 
+    {
+        await Cards.update
+        (
+            payload,
+            {
+                where: {
+                    user_id: payload.user_id,
+                    id: payload.id
+                }
+            }
+        );
+
+        res.status(200).json(payload);
+    } 
+    catch(error) 
     {
         console.error(error);
         res.status(500).end();
