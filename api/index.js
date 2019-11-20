@@ -82,11 +82,15 @@ Sets = sequelize.define('set',
 
 Cards = sequelize.define('set',
 {
-    user_id: Sequelize.INTEGER,
     name: Sequelize.STRING,
     value: Sequelize.STRING,
-    set_id: Sequelize.INTEGER
 });
+
+
+User.hasMany(Sets);
+Cards.belongsTo(Sets);
+Sets.hasMany(Cards);
+Sets.belongsTo(User);
 
 async function sync() 
 {
