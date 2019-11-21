@@ -85,8 +85,13 @@ Cards = sequelize.define('set',
     name: Sequelize.STRING,
     value: Sequelize.STRING,
 });
+UserTokens = sequelize.define('usertokens',
+{
+    token: Sequelize.STRING
+});
 
-
+UserTokens.belongsTo(User);
+User.hasMany(UserTokens);
 User.hasMany(Sets);
 Cards.belongsTo(Sets);
 Sets.hasMany(Cards);
@@ -100,6 +105,7 @@ async function sync()
         await User.sync();
         await Sets.sync();
         await Cards.sync();
+        await UserTokens.sync();
         console.log("Succesfully created the users table");
     } 
     catch(error) 
@@ -370,7 +376,24 @@ route("post","/login", async function(req, res)
 route("post", "/logout", async function(req, res)
 {
     // todo: invalidate tokens
-    res.status(200).end();
+    if(req.params.user !== "me") {
+        res.status(500).end();
+    }
+    try
+    {
+        await UserTokens.destroy
+        ({
+            where: {
+                id: req.params.usertoken
+            }
+        });
+        res.status(200).end();
+    }
+    catch(error)
+    {
+        console.error(error);
+        res.status(500).end();
+    }
 }, true);
 
 void async function() 
