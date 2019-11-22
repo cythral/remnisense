@@ -375,7 +375,6 @@ route("post","/login", async function(req, res)
 
 route("post", "/logout", async function(req, res)
 {
-    // todo: invalidate tokens
     try
     {
         await UserTokens.destroy
