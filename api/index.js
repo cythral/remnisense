@@ -80,16 +80,26 @@ Sets = sequelize.define('set',
     name: Sequelize.STRING
 });
 
-Cards = sequelize.define('set',
+Cards = sequelize.define('card',
 {
     name: Sequelize.STRING,
     value: Sequelize.STRING,
 });
+
 UserTokens = sequelize.define('usertokens',
 {
     token: Sequelize.STRING
 });
 
+resultSet = sequelize.define('result_set',
+{
+    date_of_result : sequelize.DATE,
+    time_took: sequelize.INTEGER,
+    num_correct: sequelize.INTEGER,
+    num_incorrect: sequelize.INTEGER
+});
+
+resultSet.belongsTo(User);
 UserTokens.belongsTo(User);
 User.hasMany(UserTokens);
 User.hasMany(Sets);
