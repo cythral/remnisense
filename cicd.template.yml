@@ -1,3 +1,4 @@
+Description: CICD pipeline for Remnisense (memory training/flashcards)
 Parameters:
   GithubToken:
     Type: String
