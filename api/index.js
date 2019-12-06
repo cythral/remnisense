@@ -157,11 +157,11 @@ route("get", "/users", function(req, res)
 
 route("get", "/users/:user/sets", async function(req, res)
 {
-    const user_id = req.params.user === "me" ? req.user.id : req.params.user;
+    const userId = req.params.user === "me" ? req.user.id : req.params.user;
     const results = await Sets.findAll
     ({
         where: {
-            user_id
+            userId
         }
     });
 
@@ -198,7 +198,7 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
     }
 
     const payload = req.body;
-    payload.user_id = req.user.id;
+    payload.userId = req.user.id;
 
     try 
     {
@@ -207,7 +207,7 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
             payload,
             {
                 where: {
-                    user_id: payload.user_id,
+                    userId: payload.userId,
                     id: payload.id
                 }
             }
@@ -248,12 +248,12 @@ route("delete", "/users/:user/sets/:set", async function(req, res)
 
 route("get", "/users/:user/sets/set:/cards", async function(req, res)
 {
-    const user_id = req.params.user === "me" ? req.user.id : req.params.user;
+    const userId = req.params.user === "me" ? req.user.id : req.params.user;
     const set_id = req.params.set === "" ? req.set.id : req.params.set;
     const results = await Cards.findAll
     ({
         where: {
-            user_id,
+            userId,
             set_id
         }
     });
@@ -314,7 +314,7 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
     }
 
     const payload = req.body;
-    payload.user_id = req.user.id;
+    payload.userId = req.user.id;
 
     try 
     {
@@ -323,7 +323,7 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
             payload,
             {
                 where: {
-                    user_id: payload.user_id,
+                    userId: payload.userId,
                     id: payload.id
                 }
             }
