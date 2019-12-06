@@ -76,7 +76,6 @@ User = sequelize.define('user',
 
 Sets = sequelize.define('set',
 {
-    user_id: Sequelize.INTEGER,
     name: Sequelize.STRING
 });
 
