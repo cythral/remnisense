@@ -386,12 +386,12 @@ route("post", "/logout", async function(req, res)
 {
     try
     {
-        await UserTokens.destroy
-        ({
-            where: {
-                id: req.params.usertoken
-            }
-        });
+        // await UserTokens.destroy
+        // ({
+        //     where: {
+        //         id: req.params.usertoken
+        //     }
+        // });
         res.status(200).end();
     }
     catch(error)
