@@ -93,10 +93,10 @@ UserTokens = sequelize.define('usertokens',
 
 resultSet = sequelize.define('result_set',
 {
-    date_of_result : sequelize.DATE,
-    time_took: sequelize.INTEGER,
-    num_correct: sequelize.INTEGER,
-    num_incorrect: sequelize.INTEGER
+    date_of_result : Sequelize.DATE,
+    time_took: Sequelize.INTEGER,
+    num_correct: Sequelize.INTEGER,
+    num_incorrect: Sequelize.INTEGER
 });
 
 resultSet.belongsTo(User);
