@@ -131,12 +131,13 @@ export default {
                 }
             });
 
-            if(!response.status !== 200) {
+            if(response.status !== 200) {
                 console.error(await response.text());
                 return;
             }
 
             Vue.delete(this.$store.state.sets[this.set].cards, this.id);
+            console.log(`Deleted card ${this.id}`);
         }
     }
 }

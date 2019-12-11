@@ -13,7 +13,7 @@
                 New Card
             </li>
 
-            <flashcard-set-card v-for="card in cards" :set="id" :key="card.id" :id="card.id"></flashcard-set-card>
+            <flashcard-set-card v-for="card in $store.state.sets[id].cards" :set="id" :key="card.id" :id="card.id"></flashcard-set-card>
         </ul>
     </div>
 </template>
@@ -120,7 +120,6 @@ export default {
     data: function()
     {
         return {
-            cards: [],
             name: null,
             new: false,
             newFlashcardIcon: faPlus,
@@ -143,7 +142,6 @@ export default {
             }
 
             await this.$store.dispatch("getCards", { setId: this.id });
-            Vue.set(this, "cards", state.cards);
         } catch(error) {
             console.error("Error updating flashcard set component with state values: ", error);
         }
