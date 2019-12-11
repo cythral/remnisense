@@ -318,6 +318,7 @@ route("post", "/users/:user/sets/:set/cards", async function(req, res)
 
     const payload = req.body;
     payload.userId = req.user.id;
+    payload.setId = req.params.set;
 
     try 
     {
