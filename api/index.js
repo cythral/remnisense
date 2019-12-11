@@ -70,7 +70,11 @@ const sequelize = new Sequelize
 
 User = sequelize.define('user', 
 {
-    name: Sequelize.STRING,
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+    },
     password: Sequelize.STRING
 });
 
@@ -128,6 +132,11 @@ async function sync()
 const createUser = async ({name, password}) => 
 {
     return await User.create({name, password});
+}
+
+const addTokenToUser = async ({token, createdAt, updatedAt, userId}) =>
+{
+    return await UserTokens.create({token, createdAt, updatedAt, userId});
 }
 
 const getAllUsers = async () =>
@@ -363,6 +372,8 @@ route("post","/login", async function(req, res)
             {
                 let payload = { id: user.id };
                 let token = jwt.sign(payload, jwtOptions.secretOrKey);
+                let date = DateTime.now();
+                addTokenToUser(token, date, date, user.id);
                 res.json({ msg: "ok", token: token }).end();
             } 
             else 
