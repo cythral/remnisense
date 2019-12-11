@@ -86,7 +86,7 @@ export default new Vuex.Store({
         async createFlashcard(state, payload)
         {
             try {
-                const response = await fetch(`/api/sets/${payload.setId}/cards`, {
+                const response = await fetch(`/api/users/me/sets/${payload.setId}/cards`, {
                     method: "POST",
                     headers: {
                         "content-type": "application/json",
