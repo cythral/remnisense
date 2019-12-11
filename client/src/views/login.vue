@@ -18,11 +18,24 @@
             </div>
             
             <input type="submit" value="Login">
+            <div>Or <router-link to="/register">create an account</router-link></div>
         </form>
     </div>
 </template>
 
 <style scoped lang="scss">
+a {
+    color: $primaryColor !important;
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: underline;
+    }
+
+    &:visited {
+        color: $primaryColor;
+    }
+}
 </style>
 
 <script>
