@@ -343,7 +343,7 @@ route("delete", "/users/:user/sets/:set/cards/:card", async function(req, res)
         await Cards.destroy
         ({
             where: {
-                id: req.params.cards
+                id: req.params.card
             }
         });
 

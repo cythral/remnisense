@@ -1,8 +1,6 @@
 <template>
     <li>
-        <div class="flashcard-set-card-actions">
-            <font-awesome-icon :icon="trashIcon" class="flashcard-set-card-delete" v-on:click="deleteCard()"></font-awesome-icon>
-        </div>
+        <font-awesome-icon :icon="trashIcon" class="flashcard-set-card-delete" v-on:click="deleteCard()"></font-awesome-icon>
         <textarea v-model="name" @change="update()" @contextmenu.prevent="flip()"></textarea>
         <textarea v-model="value" @change="update()" @contextmenu.prevent="flip()">test</textarea>
     </li>
@@ -42,7 +40,21 @@
             &:nth-of-type(2) {
                 transform: rotateY(-180deg);
             }
+        }
 
+        svg {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity .5s;
+        }
+
+        &:hover {
+            svg {
+                opacity: 1;
+            }
         }
 
         &.active {
@@ -52,7 +64,7 @@
 </style>
 
 <script>
-import faTrash from "@fortawesome/free-solid-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default {
     name: "flashcard-set-card",
@@ -106,6 +118,25 @@ export default {
             }
 
             console.log(`Updated card ${this.id} with name: ${this.name} and value: ${this.value}`);
+        },
+
+        deleteCard: async function()
+        {
+            const response = await fetch(`/api/users/me/sets/${this.set}/cards/${this.id}`,
+            {
+                method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${this.$store.state.apiToken}`
+                }
+            });
+
+            if(!response.status !== 200) {
+                console.error(await response.text());
+                return;
+            }
+
+            Vue.delete(this.$store.state.sets[this.set].cards, this.id);
         }
     }
 }
