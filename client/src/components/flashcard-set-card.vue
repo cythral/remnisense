@@ -11,6 +11,8 @@
 </style>
 
 <script>
+import faTrash from "@fortawesome/free-solid-svg-icons";
+
 export default {
     name: "flashcard-set-card",
     props: [
@@ -22,7 +24,8 @@ export default {
         return {
             "set": null,
             "name": "",
-            "front": ""
+            "front": "",
+            trashIcon: faTrash
         }
     },
     mounted: function()
