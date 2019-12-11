@@ -3,8 +3,8 @@
         <div class="flashcard-set-card-actions">
             <font-awesome-icon :icon="trashIcon" class="flashcard-set-card-delete" v-on:click="deleteCard()"></font-awesome-icon>
         </div>
-        <textarea v-model="name" @contextmenu.prevent="flip()"></textarea>
-        <textarea @contextmenu.prevent="flip()">test</textarea>
+        <textarea v-model="name" @change="update()" @contextmenu.prevent="flip()"></textarea>
+        <textarea v-model="value" @contextmenu.prevent="flip()">test</textarea>
     </li>
 </template>
 
@@ -66,7 +66,8 @@ export default {
             "set": null,
             "name": "",
             "front": "",
-            trashIcon: faTrash
+            "value": "",
+            "trashIcon": faTrash
         }
     },
     mounted: function()
@@ -76,11 +77,35 @@ export default {
         const card = set.cards[this.id];
 
         Vue.set(this, "name", card.name);
+        Vue.set(this, "value", card.value);
     },
     methods: {
         flip: function()
         {
             this.$el.classList.toggle("active");
+        },
+
+        update: async function()
+        {
+            const response = await fetch(`/api/users/me/sets/${this.set}/cards/${this.id}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${this.$store.state.apiToken}`
+                },
+                body: JSON.stringify({
+                    name: this.name,
+                    value: this.value,
+                })
+            });
+
+            if(response.status !== 200) {
+                console.error(await response.text());
+                return;
+            }
+
+            console.log(`Updated card ${this.id} with name: ${this.name} and value: ${this.value}`);
         }
     }
 }
