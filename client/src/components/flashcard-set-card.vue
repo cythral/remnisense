@@ -1,5 +1,8 @@
 <template>
     <li>
+        <div class="flashcard-set-card-actions">
+            <font-awesome-icon :icon="trashIcon" class="flashcard-set-card-delete" v-on:click="deleteCard()"></font-awesome-icon>
+        </div>
         <textarea v-model="name"></textarea>
     </li>
 </template>
