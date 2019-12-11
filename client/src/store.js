@@ -33,10 +33,12 @@ export default new Vuex.Store({
                     },
                     body: JSON.stringify(payload)
                 });
-
+                
+                const cards = state.sets[payload.id].cards;
                 const responseJson = await response.json();
-                console.log(responseJson);
+                responseJson.cards = cards;
 
+                console.log(responseJson);
                 Vue.set(state.sets, payload.id, responseJson);
             } catch(error) {
                 console.error(error);
