@@ -356,36 +356,6 @@ route("delete", "/users/:user/sets/:set/cards/:card", async function(req, res)
     }
 }, true);
 
-route("patch", "/users/:user/sets/:set", async function(req, res)
-{
-    if(req.params.user !== "me") {
-        res.status(500).end();
-    }
-
-    const payload = req.body;
-    payload.userId = req.user.id;
-
-    try 
-    {
-        await Cards.update
-        (
-            payload,
-            {
-                where: {
-                    userId: payload.userId,
-                    id: payload.id
-                }
-            }
-        );
-
-        res.status(200).json(payload);
-    } 
-    catch(error) 
-    {
-        console.error(error);
-        res.status(500).end();
-    }
-}, true);
 
 route("post", "/register", function(req, res)
 {
