@@ -27,6 +27,7 @@ describe("flashcard-set", () =>
 
     beforeEach(() => 
     {
+        fetch.mockReset();
 
         localVue = createLocalVue();
         localVue.use(Vuex);
@@ -82,6 +83,8 @@ describe("flashcard-set", () =>
         
         beforeEach(() =>
         {
+            fetch.mockReset();
+
             id = 1;
             apiToken = "Test token";
 
@@ -115,13 +118,13 @@ describe("flashcard-set", () =>
             createFlashcardBtn.trigger("click");
             await wrapper.vm.$nextTick();
 
-            expect(fetch).toHaveBeenCalledWith(`/api/sets/${id}/cards`, {
+            expect(fetch).toHaveBeenCalledWith(`/api/users/me/sets/${id}/cards`, expect.objectContaining({
                 method: "POST",
                 headers: expect.objectContaining({
                     "content-type": "application/json",
                     "authorization": `Bearer ${apiToken}`
                 })
-            });
+            }));
         }); 
     });
 });
