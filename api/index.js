@@ -71,7 +71,7 @@ const sequelize = new Sequelize
 User = sequelize.define('user', 
 {
     name: {
-        type: DataTypes.STRING,
+        type: Sequelize.STRING,
         allowNull: false,
         unique: true
     },
