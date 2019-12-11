@@ -138,7 +138,10 @@ export default new Vuex.Store({
             });
 
             const cards = await response.json();
-            Vue.set(set, "cards", cards);
+            const result = {};
+            
+            cards.map(card => result[card.id] = card);
+            Vue.set(set, "cards", result);
         }
     },
     plugins: [

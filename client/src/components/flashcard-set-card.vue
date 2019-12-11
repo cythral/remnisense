@@ -13,16 +13,22 @@
 <script>
 export default {
     name: "flashcard-set-card",
+    props: [
+        "set",
+        "id"
+    ],
     data: function()
     {
         return {
+            "set": null,
             "name": "",
             "front": ""
         }
     },
     mounted: function()
     {
-        const set = this.$store.state[this.set];
+        console.log(this.id);
+        const set = this.$store.state.sets[this.set];
         const card = set.cards[this.id];
 
         Vue.set(this, "name", card.name);
