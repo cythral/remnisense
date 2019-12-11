@@ -102,7 +102,7 @@ export default new Vuex.Store({
             } catch(error) {
                 console.error(error);
             }
-        }
+        },
     },
     actions: {
         async getAllSets() 
@@ -114,7 +114,8 @@ export default new Vuex.Store({
             }
 
             console.log("Retrieving sets...");
-            const response = await fetch("/api/users/me/sets", {
+            const response = await fetch("/api/users/me/sets", 
+            {
                 headers: {
                     "content-type": "application/json",
                     "authorization": `Bearer ${this.state.apiToken}`
@@ -123,6 +124,21 @@ export default new Vuex.Store({
 
             const sets = await response.json();
             sets.map(set => Vue.set(this.state.sets, set.id, set));
+        },
+
+        async getCards({ commit }, { setId })
+        {
+            const set = this.state.sets[setId];
+            const response = await fetch(`/api/users/me/sets/${setId}/cards`, 
+            {
+                headers: {
+                    "content-type": "application/json",
+                    "authorization": `Bearer ${this.state.apiToken}`
+                }
+            });
+
+            const cards = await response.json();
+            Vue.set(set, "cards", cards);
         }
     },
     plugins: [

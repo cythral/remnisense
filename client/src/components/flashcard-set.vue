@@ -12,6 +12,8 @@
                 <div><font-awesome-icon :icon="newFlashcardIcon"></font-awesome-icon></div>
                 New Card
             </li>
+
+            <flashcard-set-card v-for="card in cards" :set="id" :key="card.id" :id="card.id"></flashcard-set-card>
         </ul>
     </div>
 </template>
@@ -100,21 +102,26 @@
 </style>
 
 <script>
+import FlashcardSetCard from "./flashcard-set-card.vue";
 import { faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default {
     name: "flashcard-set",
     props: ["id"],
+    components: {
+        FlashcardSetCard
+    },
     data: function()
     {
         return {
+            cards: [],
             name: null,
             new: false,
             newFlashcardIcon: faPlus,
             trashIcon: faTrash
         };
     },
-    mounted: function()
+    mounted: async function()
     {
         try {
             const sets = this.$store.state.sets;
@@ -128,6 +135,9 @@ export default {
                 
                 delete state.new;
             }
+
+            await this.$store.dispatch("getCards", { setId: this.id });
+            Vue.set(this, "cards", state.cards);
         } catch(error) {
             console.error("Error updating flashcard set component with state values: ", error);
         }

@@ -255,19 +255,27 @@ route("delete", "/users/:user/sets/:set", async function(req, res)
     }
 }, true);
 
-route("get", "/users/:user/sets/set:/cards", async function(req, res)
+route("get", "/users/:user/sets/:set/cards", async function(req, res)
 {
     const userId = req.params.user === "me" ? req.user.id : req.params.user;
-    const setId = req.params.set === "" ? req.set.id : req.params.set;
-    const results = await Cards.findAll
-    ({
-        where: {
-            userId,
-            setId
-        }
-    });
+    const setId = req.params.set;
 
-    return res.json(results);
+    try 
+    {
+        const results = await Cards.findAll
+        ({
+            where: {
+                setId
+            }
+        });
+
+        return res.status(200).json(results);
+    } catch(error)
+    {
+        console.error(error);
+        res.status(500).end();
+    }
+
 }, true);
 
 route("post", "/users/:user/sets/:set/cards", async function(req, res)
