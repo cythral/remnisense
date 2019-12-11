@@ -231,14 +231,14 @@ route("patch", "/users/:user/sets/:set", async function(req, res)
     }
 }, true);
 
-route("patch", "/users/:user/sets/:set/cards", async function(req, res)
+route("patch", "/users/:user/sets/:set/cards/:card", async function(req, res)
 {
     if(req.params.user !== "me") {
         res.status(500).end();
     }
 
     const payload = req.body;
-    payload.setId = req.set.id;
+    payload.setId = req.params.set;
 
     try 
     {
@@ -248,7 +248,7 @@ route("patch", "/users/:user/sets/:set/cards", async function(req, res)
             {
                 where: {
                     setId: payload.setId,
-                    id: payload.id
+                    id: req.params.card
                 }
             }
         );
