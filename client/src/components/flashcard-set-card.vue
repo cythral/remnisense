@@ -4,7 +4,7 @@
             <font-awesome-icon :icon="trashIcon" class="flashcard-set-card-delete" v-on:click="deleteCard()"></font-awesome-icon>
         </div>
         <textarea v-model="name" @change="update()" @contextmenu.prevent="flip()"></textarea>
-        <textarea v-model="value" @contextmenu.prevent="flip()">test</textarea>
+        <textarea v-model="value" @change="update()" @contextmenu.prevent="flip()">test</textarea>
     </li>
 </template>
 
