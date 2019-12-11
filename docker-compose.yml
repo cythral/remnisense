@@ -20,7 +20,7 @@ services:
   api:
     build: api
     restart: unless-stopped
-    entrypoint: npm start
+    entrypoint: npx nodemon npm start
     depends_on:
       - mysql
     volumes:
