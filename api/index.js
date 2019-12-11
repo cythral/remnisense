@@ -106,8 +106,8 @@ resultSet.belongsTo(User);
 UserTokens.belongsTo(User);
 User.hasMany(UserTokens);
 User.hasMany(Sets);
-Cards.belongsTo(Sets);
-Sets.hasMany(Cards);
+Cards.belongsTo(Sets); 
+Sets.hasMany(Cards); 
 Sets.belongsTo(User);
 
 async function sync() 
@@ -257,25 +257,25 @@ route("delete", "/users/:user/sets/:set", async function(req, res)
 
 route("get", "/users/:user/sets/:set/cards", async function(req, res)
 {
-    const userId = req.params.user === "me" ? req.user.id : req.params.user;
-    const setId = req.params.set;
-
-    try 
-    {
-        const results = await Cards.findAll
-        ({
-            where: {
-                setId
-            }
-        });
-
-        return res.status(200).json(results);
-    } catch(error)
-    {
-        console.error(error);
+    if(req.params.user !== "me") {
         res.status(500).end();
     }
 
+    const payload = req.body;
+    payload.userId = req.user.id;
+
+    try 
+    {
+        let response = await Cards.create(payload);
+        payload.id = response.id;
+
+        res.status(200).json(payload);
+    } 
+    catch(error) 
+    {
+        console.error(error);
+        json.status(500).end();
+    }
 }, true);
 
 route("post", "/users/:user/sets/:set/cards", async function(req, res)
