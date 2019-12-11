@@ -66,14 +66,20 @@
 
     ul {
         list-style-type: none;
-        height: 150px;
+        height: 200px;
+        padding-bottom: 15px;
+        white-space: nowrap;
+        overflow-y: hidden;
+        overflow-x: auto;
 
         li {
             margin: 15px;
             width: 15%;
-            height: 100%;
+            height: calc(100% - 15px);
             border-radius: 10px;
             text-align: center;
+            vertical-align: top;
+            display: inline-block;
 
             &:first-of-type {
                 margin-left: 0;
