@@ -132,12 +132,12 @@ async function sync()
 const createUser = async ({name, password}) => 
 {
     return await User.create({name, password});
-}
+};
 
 const addTokenToUser = async ({token, createdAt, updatedAt, userId}) =>
 {
     return await UserTokens.create({token, createdAt, updatedAt, userId});
-}
+};
 
 const getAllUsers = async () =>
 {
@@ -372,8 +372,14 @@ route("post","/login", async function(req, res)
             {
                 let payload = { id: user.id };
                 let token = jwt.sign(payload, jwtOptions.secretOrKey);
-                let date = DateTime.now();
-                addTokenToUser(token, date, date, user.id);
+                let ts = Date.now();
+                let date_ob = new Date(ts);
+                let date1 = date_ob.getDate();
+                let month = date_ob.getMonth() + 1;
+                let year = date_ob.getFullYear();
+                date = year + "-" + month + "-" + date1;
+                let userId = user.id;
+                addTokenToUser({token, date, date, userId});
                 res.json({ msg: "ok", token: token }).end();
             } 
             else 
@@ -400,7 +406,7 @@ route("post", "/logout", async function(req, res)
         await UserTokens.destroy
         ({
             where: {
-                id: req.params.usertoken
+                token: req.headers.authorization.replace(/^Bearer (.*)/,"$1")
             }
         });
         res.status(200).end();
