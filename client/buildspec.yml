@@ -14,7 +14,7 @@ phases:
       - cd client
       - npm install
       - npm run build
-      - npm test
+      # - npm test
 
       - docker build -t $IMAGE .
       - docker push $IMAGE
